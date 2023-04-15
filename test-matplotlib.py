@@ -24,7 +24,7 @@ def _set_up_axes(ax):
   ax.spines['left'].set_visible(False)
   ax.spines['bottom'].set_visible(False)
 
-def create_window_2(floorNum=1, bldgThresh=5, disp=2, intensity=2, driftThresh=.7, acc=0.5):
+def init_alert_window(floorNum=1, bldgThresh=5, disp=2, intensity=2, driftThresh=.7, acc=0.5):
   drift = disp/bldgThresh
   (banner_color, banner_text) = ('#FFA723', 'Earthquake Alert') if drift < driftThresh else ('#B80303', '!!! EARTHQUAKE WARNING !!!')
 
@@ -62,13 +62,13 @@ def create_window_2(floorNum=1, bldgThresh=5, disp=2, intensity=2, driftThresh=.
 
 
 # Floor is 1, drift is below drift threshold of 0.5
-create_window_2(floorNum=1, bldgThresh=5, disp=2, intensity=2, driftThresh=0.5, acc=0.5)
+init_alert_window(floorNum=1, bldgThresh=5, disp=2, intensity=2, driftThresh=0.5, acc=0.5)
 
 # Floor is 1, drift is above drift threshold of 0.5
-create_window_2(floorNum=1, bldgThresh=5, disp=2.67, intensity=2, driftThresh=0.5, acc=0.5)
+init_alert_window(floorNum=1, bldgThresh=5, disp=2.67, intensity=2, driftThresh=0.5, acc=0.5)
 
 # Floor is above 1, drift is below drift threshold of 0.5
-create_window_2(floorNum=8, bldgThresh=5, disp=2, intensity=2, driftThresh=0.5, acc=0.5)
+init_alert_window(floorNum=8, bldgThresh=5, disp=2, intensity=2, driftThresh=0.5, acc=0.5)
 
 # Floor is above 1, drift is above drift threshold of 0.5
-create_window_2(floorNum=8, bldgThresh=5, disp=3, intensity=2, driftThresh=0.5, acc=0.5)
+init_alert_window(floorNum=8, bldgThresh=5, disp=3, intensity=2, driftThresh=0.5, acc=0.5)
