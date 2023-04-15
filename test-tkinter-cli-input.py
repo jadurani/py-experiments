@@ -23,3 +23,5 @@ LABEL = Label(ROOT, text="Hello, world!")
 LABEL.pack()
 ROOT.after(0, ask_for_userinput)
 ROOT.mainloop()
+
+print('after mainloop')
