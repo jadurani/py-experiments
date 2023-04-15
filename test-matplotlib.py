@@ -24,9 +24,9 @@ def _set_up_axes(ax):
   ax.spines['left'].set_visible(False)
   ax.spines['bottom'].set_visible(False)
 
-def init_alert_window(floorNum=1, bldgThresh=5, disp=2, intensity=2, driftThresh=.7, acc=0.5):
-  drift = disp/bldgThresh
-  (banner_color, banner_text) = ('#FFA723', 'Earthquake Alert') if drift < driftThresh else ('#B80303', '!!! EARTHQUAKE WARNING !!!')
+def init_alert_window(floor_num=1, disp_thresh=5, disp=2, intensity=2, drift_thresh=.7, acc=0.5):
+  drift = disp/disp_thresh
+  (banner_color, banner_text) = ('#FFA723', 'Earthquake Alert') if drift < drift_thresh else ('#B80303', '!!! EARTHQUAKE WARNING !!!')
 
   # Create a new figure
   fig = plt.figure(facecolor='#EEEEEE')
@@ -35,7 +35,6 @@ def init_alert_window(floorNum=1, bldgThresh=5, disp=2, intensity=2, driftThresh
   ax = fig.add_subplot(111)
   _set_up_axes(ax)
 
-
   # set background color
   ax.set_facecolor(banner_color)
   # set banner text
@@ -43,18 +42,19 @@ def init_alert_window(floorNum=1, bldgThresh=5, disp=2, intensity=2, driftThresh
 
   drift_perc = drift * 100
   drift_info = ('Drift is %.2f%% of the threshold') % (drift_perc)
+
   if drift_perc.is_integer():
     drift_info = ('Drift is %d%% of the threshold') % (drift_perc)
 
-  if floorNum > 1:
+  if floor_num > 1:
     fig.text(0.5, 0.55, drift_info, ha='center', va='center', fontsize=18, weight="semibold")
-    fig.text(0.5, 0.45, ('FLOOR %s') % (floorNum), ha='center', va='center', fontsize=18, weight="semibold")
+    fig.text(0.5, 0.45, ('FLOOR %s') % (floor_num), ha='center', va='center', fontsize=18, weight="semibold")
     fig.text(0.5, 0.35, ('Displacement %.2f m') % (disp), ha='center', va='center', fontsize=18, weight="semibold")
     fig.text(0.5, 0.25, ('Acceleration %.2f m/s2') % (acc), ha='center', va='center', fontsize=18, weight="semibold")
   else:
     fig.text(0.5, 0.625, ('Intensity %d') % (intensity), ha='center', va='center', fontsize=24, weight="semibold")
     fig.text(0.5, 0.475, drift_info, ha='center', va='center', fontsize=18, weight="semibold")
-    fig.text(0.5, 0.375, ('FLOOR %s') % (floorNum), ha='center', va='center', fontsize=18, weight="semibold")
+    fig.text(0.5, 0.375, ('FLOOR %s') % (floor_num), ha='center', va='center', fontsize=18, weight="semibold")
     fig.text(0.5, 0.275, ('Displacement %.2f m') % (disp), ha='center', va='center', fontsize=18, weight="semibold")
     fig.text(0.5, 0.175, ('Acceleration %.2f m/s2') % (acc), ha='center', va='center', fontsize=18, weight="semibold")
 
@@ -62,13 +62,13 @@ def init_alert_window(floorNum=1, bldgThresh=5, disp=2, intensity=2, driftThresh
 
 
 # Floor is 1, drift is below drift threshold of 0.5
-init_alert_window(floorNum=1, bldgThresh=5, disp=2, intensity=2, driftThresh=0.5, acc=0.5)
+init_alert_window(floor_num=1, disp_thresh=5, disp=2, intensity=2, drift_thresh=0.5, acc=0.5)
 
 # Floor is 1, drift is above drift threshold of 0.5
-init_alert_window(floorNum=1, bldgThresh=5, disp=2.67, intensity=2, driftThresh=0.5, acc=0.5)
+init_alert_window(floor_num=1, disp_thresh=5, disp=2.67, intensity=2, drift_thresh=0.5, acc=0.5)
 
 # Floor is above 1, drift is below drift threshold of 0.5
-init_alert_window(floorNum=8, bldgThresh=5, disp=2, intensity=2, driftThresh=0.5, acc=0.5)
+init_alert_window(floor_num=8, disp_thresh=5, disp=2, intensity=2, drift_thresh=0.5, acc=0.5)
 
 # Floor is above 1, drift is above drift threshold of 0.5
-init_alert_window(floorNum=8, bldgThresh=5, disp=3, intensity=2, driftThresh=0.5, acc=0.5)
+init_alert_window(floor_num=8, disp_thresh=5, disp=3, intensity=2, drift_thresh=0.5, acc=0.5)
