@@ -9,27 +9,6 @@ import time
 use('Qt5Agg')
 plt.ion()
 
-def create_window_1():
-  # Create a 2D NumPy array with some custom image data
-  image_data = np.array([[0.1, 0.2, 0.3], [0.4, 0.5, 0.6], [0.7, 0.8, 0.9]])
-
-  # Create a new figure and axis
-  fig, ax = plt.subplots()
-
-  # create banner text with background color
-  banner_text = 'Alert: Abnormal data detected'
-  fig.text(0.5, 0.95, banner_text,
-          ha='center', va='center',
-          bbox=dict(facecolor='red', alpha=0.75, edgecolor='none'))
-
-  # Display the image data using imshow()
-  ax.imshow(image_data)
-  fig.subplots_adjust(top=0.9, bottom=0.1)
-
-  # Show the plot
-  fig.canvas.start_event_loop(1)
-
-
 def _set_up_axes(ax):
   ax.xaxis.set_tick_params(labelbottom=False)
   ax.yaxis.set_tick_params(labelleft=False)
