@@ -21,8 +21,8 @@ def handle_close(ser, root):
     root.destroy()
 
 window = Tk()
-window.geometry("600x300")
-window.title("Alarm Interface")
+window.geometry("600x150")
+window.title("Relay Module")
 ser = start_connection()
 
 label = Label(window, text="Alarm Trigger",font=('Arial',40, 'bold'),fg='white')
