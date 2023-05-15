@@ -65,7 +65,6 @@ def init_alert_window(floor_num=1, disp_thresh=5, disp=2, intensity=2, drift_thr
 
   fig.canvas.start_event_loop(1)
 
-
 def init_table_window(floor_num=1, disp_thresh=5, disp=2, intensity=2, drift_thresh=.7, acc=0.5):
   drift = disp/disp_thresh
   (banner_color, banner_text) = ('#FFA723', 'Earthquake Alert') if drift < drift_thresh else ('#B80303', '!!! EARTHQUAKE WARNING !!!')
@@ -104,9 +103,6 @@ def init_table_window(floor_num=1, disp_thresh=5, disp=2, intensity=2, drift_thr
 
   headers=['', 'Displacement', 'Acceleration', '% Drift']
   colColours = [GREY, GREY, GREY, GREY]
-  colWidths = [0.25, 0.25, 0.25, 0.25]
-
-  # fig, ax = PLT.subplots()
 
   # Hide axes
   ax_bottom = fig.add_subplot(212)
@@ -121,7 +117,6 @@ def init_table_window(floor_num=1, disp_thresh=5, disp=2, intensity=2, drift_thr
       colLabels=headers,
       colColours=colColours,
       cellColours=cellColours,
-      colWidths=colWidths,
       bbox=bbox
     )
 
@@ -132,7 +127,8 @@ def init_table_window(floor_num=1, disp_thresh=5, disp=2, intensity=2, drift_thr
   table[2,0].set_text_props(color=WHITE)
   table[2,1].set_text_props(color=WHITE)
   table[2,2].set_text_props(color=WHITE)
-  table[2,3].set_text_props(color=WHITE)
+  table[2,3].set(facecolor='YELLOW')
+  table[2,3].get_text().set_color(color=WHITE)
 
   # Set font size
   table.auto_set_font_size(False)
