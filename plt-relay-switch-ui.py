@@ -65,7 +65,7 @@ def show_figure():
   fig.text(0.445, 0.215, 'IoT systems activated.', ha='center', va='center', fontsize=10, color='#000000')
 
   # Create the button
-  button_ax = fig.add_axes([0.5, 0.05, 0.15, 0.075])  # Adjust the values as per your desired position and size
+  button_ax = fig.add_axes([0.575, 0.185, 0.125, 0.055])  # Adjust the values as per your desired position and size
   button_ax.spines['top'].set_visible(False)
   button_ax.spines['right'].set_visible(False)
   button_ax.spines['left'].set_visible(False)
