@@ -1,5 +1,6 @@
 import matplotlib.image as mpimg
 import matplotlib.pyplot as plt
+from matplotlib.widgets import Button
 from matplotlib import use
 from matplotlib import rcParams
 rcParams['toolbar'] = 'None'
@@ -46,6 +47,8 @@ def _show_border(ax, border_state):
   # Plot the resized image on the axes
   ax.imshow(image, interpolation='bilinear', extent=(0, desired_width, 0, desired_height))
 
+def on_button_click(event):
+  print("Button clicked!")
 
 def show_figure():
   # Create a figure and axes
@@ -60,6 +63,20 @@ def show_figure():
   # section title
   fig.text(0.465, 0.275, 'Relay Status: ON', ha='center', va='center', fontsize=14, color='#B80303', weight="bold")
   fig.text(0.445, 0.215, 'IoT systems activated.', ha='center', va='center', fontsize=10, color='#000000')
+
+  # Create the button
+  button_ax = fig.add_axes([0.5, 0.05, 0.15, 0.075])  # Adjust the values as per your desired position and size
+  button_ax.spines['top'].set_visible(False)
+  button_ax.spines['right'].set_visible(False)
+  button_ax.spines['left'].set_visible(False)
+  button_ax.spines['bottom'].set_visible(False)
+
+  button = Button(button_ax, 'Click Me', color='#B80303', hovercolor='#b33434')
+  button.label.set_color('white')
+  button.label.set_weight('bold')
+
+  button.on_clicked(on_button_click)
+
 
   # Show the plot
   fig.canvas.start_event_loop(2)
