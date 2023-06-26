@@ -55,9 +55,13 @@ def show_figure():
   # [left, bottom, width, height]
   ax.set_position([0.25, 0, 0.5, 0.5])
   _set_up_axes(ax)
-  _show_border(ax, OPEN)
+  _show_border(ax, CLOSED_RED)
+
+  # section title
+  fig.text(0.465, 0.275, 'Relay Status: ON', ha='center', va='center', fontsize=14, color='#B80303', weight="bold")
+  fig.text(0.445, 0.215, 'IoT systems activated.', ha='center', va='center', fontsize=10, color='#000000')
 
   # Show the plot
-  fig.canvas.start_event_loop(5)
+  fig.canvas.start_event_loop(2)
 
 show_figure()
