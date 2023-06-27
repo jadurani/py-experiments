@@ -166,7 +166,7 @@ def show_figure():
   step_1_elements, step_1_btn = create_step_1_elements(fig)
   show_hide_items(items_to_show=step_1_elements) # NOTE: instead of hiding, we're showing, unlike in step 3 and 2
 
-  # START - ACTIONS - # Set up the lambda function to pass the required arguments
+  # START - ACTIONS: Set up lambda functions and pass the required arguments
   step_1_btn.on_clicked(lambda event: show_hide_items(items_to_hide=step_1_elements, items_to_show=step_2_elements, event=event))
   step_2_btn_a.on_clicked(lambda event: show_hide_items(items_to_hide=step_2_elements, items_to_show=step_3_elements, event=event))
   step_2_btn_b.on_clicked(lambda event: show_hide_items(items_to_hide=step_2_elements, items_to_show=step_1_elements, event=event))
