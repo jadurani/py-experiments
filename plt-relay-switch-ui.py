@@ -47,8 +47,13 @@ def _show_border(ax, border_state):
   # Plot the resized image on the axes
   ax.imshow(image, interpolation='bilinear', extent=(0, desired_width, 0, desired_height))
 
-def on_button_click(event):
+def on_button_click(ax, button_ax, relay_text, relay_subtext):
+  # Hide ax and button_ax
   print("Button clicked!")
+  relay_text.set_visible(False)
+  relay_subtext.set_visible(False)
+  ax.set_visible(False)
+  button_ax.set_visible(False)
 
 def show_figure():
   # Create a figure and axes
@@ -61,8 +66,8 @@ def show_figure():
   _show_border(ax, CLOSED_RED)
 
   # section title
-  fig.text(0.465, 0.275, 'Relay Status: ON', ha='center', va='center', fontsize=14, color='#B80303', weight="bold")
-  fig.text(0.445, 0.215, 'IoT systems activated.', ha='center', va='center', fontsize=10, color='#000000')
+  relay_text = fig.text(0.465, 0.275, 'Relay Status: ON', ha='center', va='center', fontsize=14, color='#B80303', weight="bold")
+  relay_subtext = fig.text(0.445, 0.215, 'IoT systems activated.', ha='center', va='center', fontsize=10, color='#000000')
 
   # Create the button
   button_ax = fig.add_axes([0.575, 0.1875, 0.125, 0.055])  # Adjust the values as per your desired position and size
@@ -75,10 +80,10 @@ def show_figure():
   button.label.set_color('white')
   button.label.set_weight('bold')
 
-  button.on_clicked(on_button_click)
-
+  # Set up the lambda function to pass the required arguments
+  button.on_clicked(lambda event: on_button_click(ax, button_ax, relay_text, relay_subtext))
 
   # Show the plot
-  fig.canvas.start_event_loop(2)
+  fig.canvas.start_event_loop(3)
 
 show_figure()
