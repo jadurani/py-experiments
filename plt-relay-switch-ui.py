@@ -19,10 +19,9 @@ IMAGE_LOCS = {
   'open': './images/relay-open.png',
 }
 
-def _set_up_axes(ax):
+def _clean_axis(ax):
   ax.xaxis.set_tick_params(labelbottom=False)
   ax.yaxis.set_tick_params(labelleft=False)
-  # ax.set_position([0, 0.75, 1, 0.5])
 
   # Hide X and Y axes tick marks
   ax.set_xticks([])
@@ -67,7 +66,7 @@ def show_figure():
   step_1_ax.set_facecolor('#EEEEEE')
   # [left, bottom, width, height]
   step_1_ax.set_position([0.25, 0, 0.5, 0.5])
-  _set_up_axes(step_1_ax)
+  _clean_axis(step_1_ax)
   _show_border(step_1_ax, CLOSED_RED)
 
   # section title
@@ -76,12 +75,9 @@ def show_figure():
 
   # Create the button
   step_1_btn_ax = fig.add_axes([0.575, 0.1875, 0.125, 0.055])  # Adjust the values as per your desired position and size
-  step_1_btn_ax.spines['top'].set_visible(False)
-  step_1_btn_ax.spines['right'].set_visible(False)
-  step_1_btn_ax.spines['left'].set_visible(False)
-  step_1_btn_ax.spines['bottom'].set_visible(False)
+  _clean_axis(step_1_btn_ax)
 
-  step_1_btn = Button(step_1_btn_ax, 'Turn off', color='#B80303', hovercolor='#980505')
+  step_1_btn = Button(ax=step_1_btn_ax, label='Turn off', color='#B80303', hovercolor='#980505')
   step_1_btn.label.set_color('white')
   step_1_btn.label.set_weight('bold')
 
@@ -92,30 +88,24 @@ def show_figure():
   step_2_ax.set_facecolor('#EEEEEE')
   # [left, bottom, width, height]
   step_2_ax.set_position([0.25, 0, 0.5, 0.5])
-  _set_up_axes(step_2_ax)
+  _clean_axis(step_2_ax)
   _show_border(step_2_ax, CLOSED_RED)
 
   # section title
   step_2_text_1 = fig.text(0.31, 0.275, 'Turn off Relay Module?', ha='left', va='center', fontsize=14, color='#B80303', weight="bold")
 
   step_2_btn_a_ax = fig.add_axes([0.31, 0.1875, 0.19, 0.055])  # Adjust the values as per your desired position and size
-  step_2_btn_a_ax.spines['top'].set_visible(False)
-  step_2_btn_a_ax.spines['right'].set_visible(False)
-  step_2_btn_a_ax.spines['left'].set_visible(False)
-  step_2_btn_a_ax.spines['bottom'].set_visible(False)
+  _clean_axis(step_2_btn_a_ax)
 
-  step_2_btn_a = Button(step_2_btn_a_ax, 'Yes, turn it off', color='#D9D9D9', hovercolor='#C7C7C7')
+  step_2_btn_a = Button(ax=step_2_btn_a_ax, label='Yes, turn it off', color='#D9D9D9', hovercolor='#C7C7C7')
   step_2_btn_a.label.set_color('grey')
   step_2_btn_a.label.set_weight('bold')
 
   # Create the button
   step_2_btn_b_ax = fig.add_axes([0.5225, 0.1875, 0.19, 0.055])  # Adjust the values as per your desired position and size
-  step_2_btn_b_ax.spines['top'].set_visible(False)
-  step_2_btn_b_ax.spines['right'].set_visible(False)
-  step_2_btn_b_ax.spines['left'].set_visible(False)
-  step_2_btn_b_ax.spines['bottom'].set_visible(False)
+  _clean_axis(step_2_btn_b_ax)
 
-  step_2_btn_b = Button(step_2_btn_b_ax, 'No, keep it on', color='#B80303', hovercolor='#980505')
+  step_2_btn_b = Button(ax=step_2_btn_b_ax, label='No, keep it on', color='#B80303', hovercolor='#980505')
   step_2_btn_b.label.set_color('white')
   step_2_btn_b.label.set_weight('bold')
 
@@ -128,7 +118,7 @@ def show_figure():
   step_3_ax.set_facecolor('#EEEEEE')
   # [left, bottom, width, height]
   step_3_ax.set_position([0.25, 0, 0.5, 0.5])
-  _set_up_axes(step_3_ax)
+  _clean_axis(step_3_ax)
   _show_border(step_3_ax, OPEN)
 
   # section title
