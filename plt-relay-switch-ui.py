@@ -98,7 +98,7 @@ def show_figure():
   _clean_axis(step_2_btn_a_ax)
 
   step_2_btn_a = Button(ax=step_2_btn_a_ax, label='Yes, turn it off', color='#D9D9D9', hovercolor='#C7C7C7')
-  step_2_btn_a.label.set_color('grey')
+  step_2_btn_a.label.set_color('#303030')
   step_2_btn_a.label.set_weight('bold')
 
   # Create the button
@@ -117,7 +117,7 @@ def show_figure():
   step_3_ax = fig.add_subplot(222)
   step_3_ax.set_facecolor('#EEEEEE')
   # [left, bottom, width, height]
-  step_3_ax.set_position([0.25, 0, 0.5, 0.5])
+  step_3_ax.set_position([0.26, 0, 0.5, 0.5])
   _clean_axis(step_3_ax)
   _show_border(step_3_ax, OPEN)
 
@@ -137,7 +137,7 @@ def show_figure():
   step_2_btn_b.on_clicked(lambda event: show_hide_items(items_to_hide=step_2_elements, items_to_show=step_1_elements, event=event))
 
   # Show the plot
-  fig.canvas.start_event_loop(10)
+  fig.canvas.start_event_loop(2)
 
 
 show_figure()
