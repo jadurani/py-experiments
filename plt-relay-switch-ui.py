@@ -89,39 +89,48 @@ def show_figure():
 
 
   #################################### START - STEP 2
-  step_2_ax = fig.add_subplot(212)
-  step_2_ax.set_facecolor('#EEEEEE')
-  # [left, bottom, width, height]
-  step_2_ax.set_position([0.25, 0, 0.5, 0.5])
-  _set_up_axes(step_2_ax)
-  _show_border(step_2_ax, CLOSED_RED)
+  # step_2_ax = fig.add_subplot(212)
+  # step_2_ax.set_facecolor('#EEEEEE')
+  # # [left, bottom, width, height]
+  # step_2_ax.set_position([0.25, 0, 0.5, 0.5])
+  # _set_up_axes(step_2_ax)
+  # _show_border(step_2_ax, CLOSED_RED)
 
-  # section title
-  text_1 = fig.text(0.5, 0.275, 'Turn off Relay Module?', ha='center', va='center', fontsize=14, color='#B80303', weight="bold")
+  # # section title
+  # text_1 = fig.text(0.5, 0.275, 'Turn off Relay Module?', ha='center', va='center', fontsize=14, color='#B80303', weight="bold")
 
-  step_2_btn_a_ax = fig.add_axes([0.3, 0.1875, 0.2, 0.055])  # Adjust the values as per your desired position and size
-  step_2_btn_a_ax.spines['top'].set_visible(False)
-  step_2_btn_a_ax.spines['right'].set_visible(False)
-  step_2_btn_a_ax.spines['left'].set_visible(False)
-  step_2_btn_a_ax.spines['bottom'].set_visible(False)
+  # step_2_btn_a_ax = fig.add_axes([0.3, 0.1875, 0.2, 0.055])  # Adjust the values as per your desired position and size
+  # step_2_btn_a_ax.spines['top'].set_visible(False)
+  # step_2_btn_a_ax.spines['right'].set_visible(False)
+  # step_2_btn_a_ax.spines['left'].set_visible(False)
+  # step_2_btn_a_ax.spines['bottom'].set_visible(False)
 
-  step_2_btn_a = Button(step_2_btn_a_ax, 'Yes, turn it off', color='#D9D9D9', hovercolor='#b33434')
-  step_2_btn_a.label.set_color('grey')
-  step_2_btn_a.label.set_weight('bold')
+  # step_2_btn_a = Button(step_2_btn_a_ax, 'Yes, turn it off', color='#D9D9D9', hovercolor='#b33434')
+  # step_2_btn_a.label.set_color('grey')
+  # step_2_btn_a.label.set_weight('bold')
 
-  # Create the button
-  step_2_btn_b_ax = fig.add_axes([0.5225, 0.1875, 0.2, 0.055])  # Adjust the values as per your desired position and size
-  step_2_btn_b_ax.spines['top'].set_visible(False)
-  step_2_btn_b_ax.spines['right'].set_visible(False)
-  step_2_btn_b_ax.spines['left'].set_visible(False)
-  step_2_btn_b_ax.spines['bottom'].set_visible(False)
+  # # Create the button
+  # step_2_btn_b_ax = fig.add_axes([0.5225, 0.1875, 0.2, 0.055])  # Adjust the values as per your desired position and size
+  # step_2_btn_b_ax.spines['top'].set_visible(False)
+  # step_2_btn_b_ax.spines['right'].set_visible(False)
+  # step_2_btn_b_ax.spines['left'].set_visible(False)
+  # step_2_btn_b_ax.spines['bottom'].set_visible(False)
 
-  step_2_btn_b = Button(step_2_btn_b_ax, 'No, keep it on', color='#B80303', hovercolor='#b33434')
-  step_2_btn_b.label.set_color('white')
-  step_2_btn_b.label.set_weight('bold')
+  # step_2_btn_b = Button(step_2_btn_b_ax, 'No, keep it on', color='#B80303', hovercolor='#b33434')
+  # step_2_btn_b.label.set_color('white')
+  # step_2_btn_b.label.set_weight('bold')
 
   #################################### START - STEP 3
+  step_3_ax = fig.add_subplot(212)
+  step_3_ax.set_facecolor('#EEEEEE')
+  # [left, bottom, width, height]
+  step_3_ax.set_position([0.25, 0, 0.5, 0.5])
+  _set_up_axes(step_3_ax)
+  _show_border(step_3_ax, OPEN)
 
+  # section title
+  text_1 = fig.text(0.295, 0.275, 'Relay Status: OFF', ha='left', va='center', fontsize=14, color='#000000', weight="bold")
+  text_2 = fig.text(0.295, 0.215, 'You have deactivated the IoT systems.', ha='left', va='center', fontsize=10, color='#000000')
 
   # Show the plot
   fig.canvas.start_event_loop(3)
