@@ -311,6 +311,16 @@ def show_hide_items(items_to_hide=[], items_to_show=[], event=None):
 		item.set_visible(True)
 		item.set_zorder(99) # send forward
 
+def turn_off_relay(params):
+	print('TO DO: Do something to turn off the relay')
+
+	show_hide_items(items_to_hide=params['items_to_hide'], items_to_show=params['items_to_show'], event='Turn off relay')
+
+	border_ax = params['border_ax']
+	border_ax.set_position([0.26, -0.125, 0.5, 0.5])
+	_show_border(border_ax, OPEN)
+
+
 
 def create_step_1_elements(fig, border_ax=None, is_warning=False):
 	'''
@@ -412,9 +422,6 @@ def create_step_3_elements(fig, border_ax=None):
 		border_ax.set_facecolor(GREY)
 		_clean_up_axis(border_ax)
 
-	border_ax.set_position([0.26, -0.125, 0.5, 0.5])
-	_show_border(border_ax, OPEN)
-
 	# Section title and subtitle
 	step_3_text_1 = fig.text(0.31, 0.15, 'Relay Status: OFF', ha='left', va='center', fontsize=14, color=BLACK, weight='bold')
 	step_3_text_2 = fig.text(0.31, 0.095, 'IoT systems deactivated.', ha='left', va='center', fontsize=10, color=BLACK)
@@ -440,11 +447,19 @@ def _create_relay_section(fig, is_warning):
 	# NOTE: instead of hiding, we're showing, unlike in step 3 and 2
 	show_hide_items(items_to_show=step_1_elements)
 
-	# # START - ACTIONS: Set up lambda functions and pass the required arguments
+
+	# START - ACTIONS: Set up lambda functions and pass the required arguments
 	step_1_btn.on_clicked(lambda event: show_hide_items(items_to_hide=step_1_elements, items_to_show=step_2_elements, event=event))
-	step_2_btn_a.on_clicked(lambda event: show_hide_items(items_to_hide=step_2_elements, items_to_show=step_3_elements, event=event))
 	step_2_btn_b.on_clicked(lambda event: show_hide_items(items_to_hide=step_2_elements, items_to_show=step_1_elements, event=event))
+
+	params = {
+		'items_to_hide': step_2_elements,
+		'items_to_show': step_3_elements,
+		'border_ax': border_ax
+	}
+	step_2_btn_a.on_clicked(lambda event: turn_off_relay(params))
 	return step_1_btn, step_2_btn_a, step_2_btn_b
+
 
 def show_multi_dim_popup(self, event_values):
 	'''
@@ -499,6 +514,7 @@ def show_multi_dim_popup(self, event_values):
 		printE('Unable to create pop-up', 'alert_popup.py')
 		printE(f"{COLOR['red']} {str(e)} {COLOR['white']}\n", 'alert_popup.py')
 
+
 def hide_popup(self, evt=None):
 	'''
 	Hides the popup, if it already exists
@@ -538,7 +554,7 @@ class PopUp:
 	def show_popup(self):
 		print('PREPARE POPUP!')
 		show_multi_dim_popup(self, TEST_EVENT_VALUES)
-		self.alert_window.canvas.start_event_loop(3)
+		self.alert_window.canvas.start_event_loop(10)
 
 POPUP = PopUp()
 POPUP.prepare()
