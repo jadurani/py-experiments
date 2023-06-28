@@ -481,7 +481,7 @@ def show_multi_dim_popup(self, event_values):
 		fig.canvas.mpl_connect('close_event', lambda evt: hide_popup(self, evt))
 		window_title = '!!! EARTHQUAKE WARNING !!!' if is_warning else 'Earthquake Alert' # include time?
 		fig.canvas.set_window_title(window_title)
-		fig.set_size_inches(6, 5.75)
+		fig.set_size_inches(6.5, 5.5)
 
 		# # 1 - set up banner
 		_create_banner(fig, is_warning, popup_color)
