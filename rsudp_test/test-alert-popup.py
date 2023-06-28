@@ -432,11 +432,11 @@ def _create_relay_section(fig, is_warning):
 	# NOTE: instead of hiding, we're showing, unlike in step 3 and 2
 	show_hide_items(items_to_show=step_1_elements)
 
-	# START - ACTIONS: Set up lambda functions and pass the required arguments
+	# # START - ACTIONS: Set up lambda functions and pass the required arguments
 	step_1_btn.on_clicked(lambda event: show_hide_items(items_to_hide=step_1_elements, items_to_show=step_2_elements, event=event))
 	step_2_btn_a.on_clicked(lambda event: show_hide_items(items_to_hide=step_2_elements, items_to_show=step_3_elements, event=event))
 	step_2_btn_b.on_clicked(lambda event: show_hide_items(items_to_hide=step_2_elements, items_to_show=step_1_elements, event=event))
-
+	return step_1_btn, step_2_btn_a, step_2_btn_b
 
 def show_multi_dim_popup(self, event_values):
 	'''
@@ -477,8 +477,14 @@ def show_multi_dim_popup(self, event_values):
 
 		# ? set up border?
 		# 4 - set up relay switch
-		_create_relay_section(fig, is_warning)
+		step_1_btn, step_2_btn_a, step_2_btn_b = _create_relay_section(fig, is_warning)
+		# we need to keep a reference to these buttons so they will continue to work
+		# Ref: https://matplotlib.org/stable/api/widgets_api.html
+		self.step_1_btn = step_1_btn
+		self.step_2_btn_a = step_2_btn_a
+		self.step_2_btn_b = step_2_btn_b
 
+		# Also keep a reference to the figure
 		self.alert_window = fig
 
 	except Exception as e:
