@@ -34,6 +34,9 @@ GREY = '#EEEEEE'
 WHITE = '#FFFFFF'
 BLACK = '#000000'
 
+RED_HOVER = '#980505'
+YELLOW_HOVER = '#DE921F'
+
 CLOSED_YELLOW = 'closed-yellow'
 CLOSED_RED = 'closed-red'
 OPEN = 'open'
@@ -325,6 +328,7 @@ def create_step_1_elements(fig, border_ax=None, is_warning=False):
 	_show_border(border_ax, border_color)
 
 	el_color = RED if is_warning else YELLOW
+	el_color_hover = RED_HOVER if is_warning else YELLOW_HOVER
 
 	# Section title and subtitle
 	section_title = fig.text(0.31, 0.15, 'Relay Status: ON', ha='left', va='center', fontsize=14, color=el_color, weight="bold")
@@ -335,7 +339,7 @@ def create_step_1_elements(fig, border_ax=None, is_warning=False):
 	_clean_up_axis(step_1_btn_ax)
 
 	# Create button. Clicking this should show "Step 2"
-	step_1_btn = Button(ax=step_1_btn_ax, label='Turn off', color=el_color, hovercolor='#980505')
+	step_1_btn = Button(ax=step_1_btn_ax, label='Turn off', color=el_color, hovercolor=el_color_hover)
 	step_1_btn.label.set_color('white')
 	step_1_btn.label.set_weight('bold')
 
@@ -364,6 +368,8 @@ def create_step_2_elements(fig, border_ax=None, is_warning=False):
 	_show_border(border_ax, border_color)
 
 	el_color = RED if is_warning else YELLOW
+	el_color_hover = RED_HOVER if is_warning else YELLOW_HOVER
+
 
 	# Section title (question)
 	step_2_text_1 = fig.text(0.31, 0.15, 'Turn off Relay Module?', ha='left', va='center', fontsize=14, color=el_color, weight="bold")
@@ -381,7 +387,7 @@ def create_step_2_elements(fig, border_ax=None, is_warning=False):
 	_clean_up_axis(step_2_btn_b_ax)
 
 	# Create Button B. Clicking this should show "Step 1" again - - action not provided in this function
-	step_2_btn_b = Button(ax=step_2_btn_b_ax, label='No, keep it on', color=el_color, hovercolor='#980505')
+	step_2_btn_b = Button(ax=step_2_btn_b_ax, label='No, keep it on', color=el_color, hovercolor=el_color_hover)
 	step_2_btn_b.label.set_color('white')
 	step_2_btn_b.label.set_weight('bold')
 
