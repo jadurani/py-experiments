@@ -92,21 +92,6 @@ def _clean_up_axis(ax):
 	ax.spines['left'].set_visible(False)
 	ax.spines['bottom'].set_visible(False)
 
-
-def _should_hide_popup(self, event_values):
-
-	max_pga = max(event_values['acceleration'].values())
-	max_pgd = max(event_values['displacement'].values())
-
-	is_not_same = self.prev_pga != max_pga or self.prev_pgd != max_pgd
-
-	# replace current values
-	self.prev_pga = max_pga
-	self.prev_pgd = max_pgd
-
-	return is_not_same
-
-
 def _is_warning(over_drift_thresh):
 	'''
 	If the drift in any direction is equal to or greater than the specified
@@ -441,13 +426,6 @@ def _create_relay_section(fig):
 	# NOTE: instead of hiding, we're showing, unlike in step 3 and 2
 	show_hide_items(items_to_show=step_1_elements)
 
-	if plt.isinteractive():
-		print("Interactive mode is enabled")
-	else:
-		print("Interactive mode is disabled")
-
-	# def rawr(ev):
-	# 	print('rawr!!!')
 	# START - ACTIONS: Set up lambda functions and pass the required arguments
 	# step_1_btn.on_clicked(rawr)
 	# step_1_btn.on_clicked(lambda event: show_hide_items(items_to_hide=step_1_elements, items_to_show=step_2_elements, event=event))
@@ -497,7 +475,6 @@ def show_multi_dim_popup(self, event_values):
 		_create_relay_section(fig)
 
 		self.alert_window = fig
-		fig.canvas.start_event_loop(3)
 
 	except Exception as e:
 		printE('Unable to create pop-up', 'alert_popup.py')
@@ -542,6 +519,7 @@ class PopUp:
 	def show_popup(self):
 		print('PREPARE POPUP!')
 		show_multi_dim_popup(self, TEST_EVENT_VALUES)
+		self.alert_window.canvas.start_event_loop(3)
 
 POPUP = PopUp()
 POPUP.prepare()
