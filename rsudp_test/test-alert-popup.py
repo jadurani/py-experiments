@@ -307,7 +307,7 @@ def show_hide_items(items_to_hide=[], items_to_show=[], event=None):
 		item.set_zorder(99) # send forward
 
 
-def create_step_1_elements(fig, border_ax=None):
+def create_step_1_elements(fig, border_ax=None, is_warning=False):
 	'''
 	Step 1: Inform the instrument operator that the relay status is ON
 					- Show a button to turn off the relay module.
@@ -321,10 +321,13 @@ def create_step_1_elements(fig, border_ax=None):
 		_clean_up_axis(border_ax)
 
 	border_ax.set_position([0.25, -0.125, 0.5, 0.5])
-	_show_border(border_ax, CLOSED_RED)
+	border_color = CLOSED_RED if is_warning else CLOSED_YELLOW
+	_show_border(border_ax, border_color)
+
+	el_color = RED if is_warning else YELLOW
 
 	# Section title and subtitle
-	section_title = fig.text(0.31, 0.15, 'Relay Status: ON', ha='left', va='center', fontsize=14, color='#B80303', weight="bold")
+	section_title = fig.text(0.31, 0.15, 'Relay Status: ON', ha='left', va='center', fontsize=14, color=el_color, weight="bold")
 	section_subtitle = fig.text(0.31, 0.095, 'IoT systems activated.', ha='left', va='center', fontsize=10, color='#000000')
 
 	# Create button axis
@@ -332,7 +335,7 @@ def create_step_1_elements(fig, border_ax=None):
 	_clean_up_axis(step_1_btn_ax)
 
 	# Create button. Clicking this should show "Step 2"
-	step_1_btn = Button(ax=step_1_btn_ax, label='Turn off', color='#B80303', hovercolor='#980505')
+	step_1_btn = Button(ax=step_1_btn_ax, label='Turn off', color=el_color, hovercolor='#980505')
 	step_1_btn.label.set_color('white')
 	step_1_btn.label.set_weight('bold')
 
@@ -341,7 +344,7 @@ def create_step_1_elements(fig, border_ax=None):
 	return step_1_elements, step_1_btn, border_ax
 
 
-def create_step_2_elements(fig, border_ax=None):
+def create_step_2_elements(fig, border_ax=None, is_warning=False):
 	'''
 	Step 2: Confirm with the instrument operator that they want to turn off the relay module.
 					- Show two button
@@ -357,10 +360,13 @@ def create_step_2_elements(fig, border_ax=None):
 		_clean_up_axis(border_ax)
 
 	border_ax.set_position([0.26, -0.125, 0.5, 0.5])
-	_show_border(border_ax, CLOSED_RED)
+	border_color = CLOSED_RED if is_warning else CLOSED_YELLOW
+	_show_border(border_ax, border_color)
+
+	el_color = RED if is_warning else YELLOW
 
 	# Section title (question)
-	step_2_text_1 = fig.text(0.31, 0.15, 'Turn off Relay Module?', ha='left', va='center', fontsize=14, color='#B80303', weight="bold")
+	step_2_text_1 = fig.text(0.31, 0.15, 'Turn off Relay Module?', ha='left', va='center', fontsize=14, color=el_color, weight="bold")
 
 	# Create Button A axis
 	step_2_btn_a_ax = fig.add_axes([0.31, 0.07, 0.2, 0.055])  # Adjust the values as per your desired position and size
@@ -375,7 +381,7 @@ def create_step_2_elements(fig, border_ax=None):
 	_clean_up_axis(step_2_btn_b_ax)
 
 	# Create Button B. Clicking this should show "Step 1" again - - action not provided in this function
-	step_2_btn_b = Button(ax=step_2_btn_b_ax, label='No, keep it on', color='#B80303', hovercolor='#980505')
+	step_2_btn_b = Button(ax=step_2_btn_b_ax, label='No, keep it on', color=el_color, hovercolor='#980505')
 	step_2_btn_b.label.set_color('white')
 	step_2_btn_b.label.set_weight('bold')
 
@@ -412,25 +418,24 @@ def create_step_3_elements(fig, border_ax=None):
 	return step_3_elements, border_ax
 
 
-def _create_relay_section(fig):
+def _create_relay_section(fig, is_warning):
 	# START - STEP 3
 	step_3_elements, border_ax = create_step_3_elements(fig)
 	show_hide_items(items_to_hide=step_3_elements)
 
 	# START - STEP 2
-	step_2_elements, step_2_btn_a, step_2_btn_b, border_ax = create_step_2_elements(fig, border_ax)
+	step_2_elements, step_2_btn_a, step_2_btn_b, border_ax = create_step_2_elements(fig, border_ax=border_ax, is_warning=is_warning)
 	show_hide_items(items_to_hide=step_2_elements)
 
 	# START - STEP 1
-	step_1_elements, step_1_btn, border_ax = create_step_1_elements(fig, border_ax)
+	step_1_elements, step_1_btn, border_ax = create_step_1_elements(fig, border_ax=border_ax, is_warning=is_warning)
 	# NOTE: instead of hiding, we're showing, unlike in step 3 and 2
 	show_hide_items(items_to_show=step_1_elements)
 
 	# START - ACTIONS: Set up lambda functions and pass the required arguments
-	# step_1_btn.on_clicked(rawr)
-	# step_1_btn.on_clicked(lambda event: show_hide_items(items_to_hide=step_1_elements, items_to_show=step_2_elements, event=event))
-	# step_2_btn_a.on_clicked(lambda event: show_hide_items(items_to_hide=step_2_elements, items_to_show=step_3_elements, event=event))
-	# step_2_btn_b.on_clicked(lambda event: show_hide_items(items_to_hide=step_2_elements, items_to_show=step_1_elements, event=event))
+	step_1_btn.on_clicked(lambda event: show_hide_items(items_to_hide=step_1_elements, items_to_show=step_2_elements, event=event))
+	step_2_btn_a.on_clicked(lambda event: show_hide_items(items_to_hide=step_2_elements, items_to_show=step_3_elements, event=event))
+	step_2_btn_b.on_clicked(lambda event: show_hide_items(items_to_hide=step_2_elements, items_to_show=step_1_elements, event=event))
 
 
 def show_multi_dim_popup(self, event_values):
@@ -472,7 +477,7 @@ def show_multi_dim_popup(self, event_values):
 
 		# ? set up border?
 		# 4 - set up relay switch
-		_create_relay_section(fig)
+		_create_relay_section(fig, is_warning)
 
 		self.alert_window = fig
 

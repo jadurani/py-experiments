@@ -143,8 +143,10 @@ def create_step_3_elements(fig):
   _show_border(step_3_ax, OPEN)
 
   # Section title and subtitle
-  step_3_text_1 = fig.text(0.31, 0.275, 'Relay Status: OFF', ha='left', va='center', fontsize=14, color='#000000', weight="bold")
-  step_3_text_2 = fig.text(0.31, 0.215, 'IoT systems deactivated.', ha='left', va='center', fontsize=10, color='#000000')
+  # step_3_text_1 = fig.text(0.31, 0.275, 'Relay Status: OFF', ha='left', va='center', fontsize=14, color='#000000', weight="bold")
+  # step_3_text_2 = fig.text(0.31, 0.215, 'IoT systems deactivated.', ha='left', va='center', fontsize=10, color='#000000')
+  step_3_text_1 = fig.text(0.31, 0.275, 'Relay Status: DISABLED', ha='left', va='center', fontsize=14, color='#000000', weight="bold")
+  step_3_text_2 = fig.text(0.31, 0.215, 'Module disabled in your settings file.', ha='left', va='center', fontsize=10, color='#000000')
 
   # Compile section elements
   step_3_elements = [step_3_ax, step_3_text_1, step_3_text_2]
