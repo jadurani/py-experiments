@@ -32,7 +32,9 @@ YELLOW = '#FFA723'
 RED = '#B80303'
 GREY = '#EEEEEE'
 WHITE = '#FFFFFF'
-BLACK = '#000000'
+BLACK = '#303030'
+ACCENT = '#D9D9D9'
+ACCENT_HOVER = '#C7C7C7'
 
 RED_HOVER = '#980505'
 YELLOW_HOVER = '#DE921F'
@@ -227,7 +229,7 @@ def _create_banner(fig, is_warning, banner_color):
 		0.5, 0.865, banner_text,
 		ha='center', va='center',
 		fontsize=24, color=WHITE,
-		weight="bold"
+		weight='bold'
 	)
 
 
@@ -320,7 +322,7 @@ def create_step_1_elements(fig, border_ax=None, is_warning=False):
 	# Create the border (the image)
 	if border_ax is None:
 		border_ax = fig.add_subplot(313)
-		border_ax.set_facecolor('#EEEEEE')
+		border_ax.set_facecolor(GREY)
 		_clean_up_axis(border_ax)
 
 	border_ax.set_position([0.25, -0.125, 0.5, 0.5])
@@ -331,8 +333,8 @@ def create_step_1_elements(fig, border_ax=None, is_warning=False):
 	el_color_hover = RED_HOVER if is_warning else YELLOW_HOVER
 
 	# Section title and subtitle
-	section_title = fig.text(0.31, 0.15, 'Relay Status: ON', ha='left', va='center', fontsize=14, color=el_color, weight="bold")
-	section_subtitle = fig.text(0.31, 0.095, 'IoT systems activated.', ha='left', va='center', fontsize=10, color='#000000')
+	section_title = fig.text(0.31, 0.15, 'Relay Status: ON', ha='left', va='center', fontsize=14, color=el_color, weight='bold')
+	section_subtitle = fig.text(0.31, 0.095, 'IoT systems activated.', ha='left', va='center', fontsize=10, color=BLACK)
 
 	# Create button axis
 	step_1_btn_ax = fig.add_axes([0.575, 0.07, 0.125, 0.055])  # Adjust the values as per your desired position and size
@@ -340,7 +342,7 @@ def create_step_1_elements(fig, border_ax=None, is_warning=False):
 
 	# Create button. Clicking this should show "Step 2"
 	step_1_btn = Button(ax=step_1_btn_ax, label='Turn off', color=el_color, hovercolor=el_color_hover)
-	step_1_btn.label.set_color('white')
+	step_1_btn.label.set_color(WHITE)
 	step_1_btn.label.set_weight('bold')
 
 	# Compile section elements
@@ -360,7 +362,7 @@ def create_step_2_elements(fig, border_ax=None, is_warning=False):
 	# Create the border (the image)
 	if border_ax is None:
 		border_ax = fig.add_subplot(313)
-		border_ax.set_facecolor('#EEEEEE')
+		border_ax.set_facecolor(GREY)
 		_clean_up_axis(border_ax)
 
 	border_ax.set_position([0.26, -0.125, 0.5, 0.5])
@@ -372,15 +374,15 @@ def create_step_2_elements(fig, border_ax=None, is_warning=False):
 
 
 	# Section title (question)
-	step_2_text_1 = fig.text(0.31, 0.15, 'Turn off Relay Module?', ha='left', va='center', fontsize=14, color=el_color, weight="bold")
+	step_2_text_1 = fig.text(0.31, 0.15, 'Turn off Relay Module?', ha='left', va='center', fontsize=14, color=el_color, weight='bold')
 
 	# Create Button A axis
 	step_2_btn_a_ax = fig.add_axes([0.31, 0.07, 0.2, 0.055])  # Adjust the values as per your desired position and size
 	_clean_up_axis(step_2_btn_a_ax)
 
 	# Create Button A. Clicking this should show "Step 3" - action not provided in this function
-	step_2_btn_a = Button(ax=step_2_btn_a_ax, label='Yes, turn it off', color='#D9D9D9', hovercolor='#C7C7C7')
-	step_2_btn_a.label.set_color('#303030')
+	step_2_btn_a = Button(ax=step_2_btn_a_ax, label='Yes, turn it off', color=ACCENT, hovercolor=ACCENT_HOVER)
+	step_2_btn_a.label.set_color(BLACK)
 	step_2_btn_a.label.set_weight('bold')
 
 	step_2_btn_b_ax = fig.add_axes([0.5225, 0.07, 0.2, 0.055])  # Adjust the values as per your desired position and size
@@ -388,7 +390,7 @@ def create_step_2_elements(fig, border_ax=None, is_warning=False):
 
 	# Create Button B. Clicking this should show "Step 1" again - - action not provided in this function
 	step_2_btn_b = Button(ax=step_2_btn_b_ax, label='No, keep it on', color=el_color, hovercolor=el_color_hover)
-	step_2_btn_b.label.set_color('white')
+	step_2_btn_b.label.set_color(WHITE)
 	step_2_btn_b.label.set_weight('bold')
 
 	# Compile section elements
@@ -407,17 +409,17 @@ def create_step_3_elements(fig, border_ax=None):
 	# Create the border (the image)
 	if border_ax is None:
 		border_ax = fig.add_subplot(313)
-		border_ax.set_facecolor('#EEEEEE')
+		border_ax.set_facecolor(GREY)
 		_clean_up_axis(border_ax)
 
 	border_ax.set_position([0.26, -0.125, 0.5, 0.5])
 	_show_border(border_ax, OPEN)
 
 	# Section title and subtitle
-	step_3_text_1 = fig.text(0.31, 0.15, 'Relay Status: OFF', ha='left', va='center', fontsize=14, color='#000000', weight="bold")
-	step_3_text_2 = fig.text(0.31, 0.095, 'IoT systems deactivated.', ha='left', va='center', fontsize=10, color='#000000')
-	# step_3_text_1 = fig.text(0.31, 0.275, 'Relay Status: DISABLED', ha='left', va='center', fontsize=14, color='#000000', weight="bold")
-	# step_3_text_2 = fig.text(0.31, 0.215, 'Module disabled in your settings file.', ha='left', va='center', fontsize=10, color='#000000')
+	step_3_text_1 = fig.text(0.31, 0.15, 'Relay Status: OFF', ha='left', va='center', fontsize=14, color=BLACK, weight='bold')
+	step_3_text_2 = fig.text(0.31, 0.095, 'IoT systems deactivated.', ha='left', va='center', fontsize=10, color=BLACK)
+	# step_3_text_1 = fig.text(0.31, 0.275, 'Relay Status: DISABLED', ha='left', va='center', fontsize=14, color=BLACK, weight='bold')
+	# step_3_text_2 = fig.text(0.31, 0.215, 'Module disabled in your settings file.', ha='left', va='center', fontsize=10, color=BLACK)
 
 	# Compile section elements
 	step_3_elements = [step_3_text_1, step_3_text_2]
