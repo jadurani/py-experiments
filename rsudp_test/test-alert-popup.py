@@ -42,11 +42,15 @@ YELLOW_HOVER = '#DE921F'
 CLOSED_YELLOW = 'closed-yellow'
 CLOSED_RED = 'closed-red'
 OPEN = 'open'
+LOADING = 'loading'
+ERROR = 'error'
 
 IMAGE_LOCS = {
 	'closed-yellow': pr.resource_filename('rsudp', os.path.join('img', 'alert_popup', 'relay-closed-yellow.png')),
 	'closed-red': pr.resource_filename('rsudp', os.path.join('img', 'alert_popup', 'relay-closed-red.png')),
 	'open': pr.resource_filename('rsudp', os.path.join('img', 'alert_popup', 'relay-open.png')),
+	'loading': pr.resource_filename('rsudp', os.path.join('img', 'alert_popup', 'relay-loading.png')),
+	'error': pr.resource_filename('rsudp', os.path.join('img', 'alert_popup', 'relay-error.png')),
 }
 
 TEST_EVENT_VALUES = {
