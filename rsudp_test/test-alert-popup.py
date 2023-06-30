@@ -4,7 +4,6 @@ from matplotlib.widgets import Button
 import matplotlib.image as mpimg
 from main import COLOR, printE
 import unit_converter as UC
-from popup_helper import _clean_up_axis
 import helpers
 
 import time
@@ -131,6 +130,7 @@ TEST_EVENT_VALUES = {
 		}
 }
 
+################ START HELPERS ################
 
 def _clean_up_axis(ax):
 	'''
@@ -165,6 +165,12 @@ def _is_warning(over_drift_thresh):
 	'''
 	return any(over_drift_thresh.values())
 
+
+def _is_ground_floor(floor_num):
+	return floor_num <= 1
+
+
+################ TABLE HELPERS ################
 
 def _get_table_headers():
 	headers=['Direction', 'Displacement', 'Acceleration', '% Drift']
@@ -265,39 +271,6 @@ def _format_table(table, table_properties):
 			cell.get_text().set_color(color=cell_properties['text_color'])
 
 
-def _create_banner(fig, is_warning, banner_color):
-	# banner values
-	banner_text = '!!! EARTHQUAKE WARNING !!!' if is_warning else 'Earthquake Alert'
-
-	# create axes that will serve as the banner
-	ax_banner = fig.add_subplot(311)
-	_clean_up_axis(ax_banner)
-	ax_banner.set_position([0, 0.75, 1, 0.5])
-
-	# set background color
-	ax_banner.set_facecolor(banner_color)
-
-	# set banner text (positioned on top of the banner)
-	fig.text(
-		0.5, 0.865, banner_text,
-		ha='center', va='center',
-		fontsize=24, color=WHITE,
-		weight='bold'
-	)
-
-
-def _is_ground_floor(floor_num):
-	return floor_num <= 1
-
-
-def _create_floor_info(fig, floor_num, intensity):
-	if _is_ground_floor(floor_num):
-		fig.text(0.5, 0.675, ('Intensity %s') % (intensity), ha='center', va='center', fontsize=24, weight="semibold")
-		fig.text(0.5, 0.6, ('FLOOR %s') % (floor_num), ha='center', va='center', fontsize=18, weight="semibold")
-	else:
-		fig.text(0.5, 0.625, ('FLOOR %s') % (floor_num), ha='center', va='center', fontsize=24, weight="semibold")
-
-
 def _create_table(fig, highlight_color, event_values):
 	# Values
 	floor_num = event_values['floor_num']
@@ -337,6 +310,37 @@ def _create_table(fig, highlight_color, event_values):
 	table.scale(1.2, 2.5)
 
 
+################ BANNER AND FLOOR_INFO HELPERS ################
+
+def _create_banner(fig, is_warning, banner_color):
+	# banner values
+	banner_text = '!!! EARTHQUAKE WARNING !!!' if is_warning else 'Earthquake Alert'
+
+	# create axes that will serve as the banner
+	ax_banner = fig.add_subplot(311)
+	_clean_up_axis(ax_banner)
+	ax_banner.set_position([0, 0.75, 1, 0.5])
+
+	# set background color
+	ax_banner.set_facecolor(banner_color)
+
+	# set banner text (positioned on top of the banner)
+	fig.text(
+		0.5, 0.865, banner_text,
+		ha='center', va='center',
+		fontsize=24, color=WHITE,
+		weight='bold'
+	)
+
+
+def _create_floor_info(fig, floor_num, intensity):
+	if _is_ground_floor(floor_num):
+		fig.text(0.5, 0.675, ('Intensity %s') % (intensity), ha='center', va='center', fontsize=24, weight="semibold")
+		fig.text(0.5, 0.6, ('FLOOR %s') % (floor_num), ha='center', va='center', fontsize=18, weight="semibold")
+	else:
+		fig.text(0.5, 0.625, ('FLOOR %s') % (floor_num), ha='center', va='center', fontsize=24, weight="semibold")
+
+
 def _show_border_img(ax, relay_state, is_warning=False):
 	if ax.images:
 		ax.images[0].remove()
@@ -366,6 +370,8 @@ def _show_border_img(ax, relay_state, is_warning=False):
 	# Plot the resized image on the axes
 	ax.imshow(image, interpolation='bilinear', extent=(0, desired_width, 0, desired_height))
 
+
+################ RELAY HELPERS ################
 
 def show_hide_items(items_to_hide=[], items_to_show=[], event=None):
 	print('Event: ', str(event))
@@ -669,6 +675,8 @@ def _create_relay_section(self, fig, is_warning):
 	confirm_off_btn.on_clicked(lambda event: confirm_off_relay(self, is_warning))
 
 
+################ POPUP MGMT FUNCTIONS ################
+
 def show_multi_dim_popup(self, event_values):
 	'''
 	Creates a pop-up for showing info regarding the earthquake
@@ -709,10 +717,10 @@ def show_multi_dim_popup(self, event_values):
 		# 4 - set up relay switch
 		_create_relay_section(self, fig, is_warning)
 
-		# Test only
-		self.relay_state = 'loading'
-		change_relay_state(self, 'on')
-		state_action(self, is_warning)
+		# # Test only
+		# self.relay_state = 'loading'
+		# change_relay_state(self, 'on')
+		# state_action(self, is_warning)
 
 		# Also keep a reference to the figure
 		self.alert_window = fig
@@ -760,6 +768,9 @@ def prepare_popup(self, plt, autoclose, is_relay_enabled):
 	self.disabled_elements = None
 	self.error_elements = None
 	self.all_elements = []
+
+
+################ DUMMY FUNCTIONS ################
 
 class PopUp:
 	def __init__(self):
