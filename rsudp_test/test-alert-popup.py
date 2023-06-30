@@ -482,6 +482,103 @@ def create_step_3_elements(fig, border_ax=None):
 	step_3_elements = [step_3_text_1, step_3_text_2]
 	return step_3_elements, border_ax
 
+
+def create_loading_elements(self):
+	'''
+	LOADING Screen: Show screen while confirming an active connection to the Arduino unit.
+	- In this state, the operator cannot click any button.
+
+	:param self: The instance of the class
+	:rtype: Array
+	:return: Returns an array containing the elements of this screen
+	'''
+	pass
+
+
+def create_on_elements(self):
+	'''
+	ON Screen: Inform the instrument operator that the relay status is ON
+	- Show a button to turn off the relay module.
+	- Note that the button's click handler is NOT in this function.
+
+	:param self: The instance of the class
+	:rtype: Array
+	:return: Returns an array containing the elements of this screen
+	'''
+	pass
+
+
+def create_confirm_elements(self):
+	'''
+	CONFIRM Screen: Confirm with the instrument operator that they want to turn off the relay module.
+	- Show two button
+		- Button A: Yes, turn it off
+		- Button B: No, keep it on
+	- Note that the buttons' click handlers are NOT in this function.
+
+	:param self: The instance of the class
+	:rtype: Array
+	:return: Returns an array containing the elements of this screen
+	'''
+	pass
+
+
+def create_processing_elements(self):
+	'''
+	PROCESSING Screen: Show screen while communicating with the Arduino unit.
+	- In this state, the operator cannot click any button.
+
+	:param self: The instance of the class
+	:rtype: Array
+	:return: Returns an array containing the elements of this screen
+	'''
+	pass
+
+
+def create_off_elements(self):
+	'''
+	OFF Screen: Inform the instrument operator that the relay status is OFF
+	- In this state, the operator cannot click any button.
+	- In order for the relay module to turn on, the STA/LTA Threshold should
+		again be breached. Only the turning off action can be done manually.
+
+	:param self: The instance of the class
+	:rtype: Array
+	:return: Returns an array containing the elements of this screen
+	'''
+
+	pass
+
+
+def create_disabled_elements(self):
+	'''
+	DISABLED Screen: Inform the instrument operator that the relay status is OFF
+	- In this state, the operator cannot click any button.
+	- In order for the relay module to turn on, the STA/LTA Threshold should
+		again be breached. Only the turning off action can be done manually.
+
+	:param self: The instance of the class
+	:rtype: Array
+	:return: Returns an array containing the elements of this screen
+	'''
+	pass
+
+
+def create_error_elements(self):
+	'''
+	ERROR Screen: Inform the instrument operator that the relay status is OFF
+	- In this state, the operator cannot click any button.
+	- In order for the relay module to turn on, the STA/LTA Threshold should
+		again be breached. Only the turning off action can be done manually.
+
+	:param self: The instance of the class
+	:rtype: Array
+	:return: Returns an array containing the elements of this screen
+	'''
+	pass
+
+
+
 def change_relay_state(self, next_state):
 	'''
 	Manage the state of the relay section
