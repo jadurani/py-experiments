@@ -39,7 +39,7 @@ RELAY_STATES = {
 	'on': {
 		'is_start': False,
 		'is_end': False,
-		'before': ['loading'],
+		'before': ['loading', 'confirm'],
 		'after': ['confirm']
 	},
 	'confirm': {
@@ -354,7 +354,7 @@ def _show_border_img(ax, relay_state, is_warning=False):
 	if ax.images:
 		ax.images[0].remove()
 
-	# ['loading', 'on', 'confirm', 'processing', 'off', 'disabled', 'error']
+
 
 	if relay_state in ['loading', 'processing']:
 		image_loc = IMAGE_LOCS['loading']
@@ -369,6 +369,7 @@ def _show_border_img(ax, relay_state, is_warning=False):
 		raise Exception('Unable to find border image')
 
 	image = mpimg.imread(image_loc)
+	ax.set_position([0.25, -0.125, 0.5, 0.5])
 
 	# Calculate the desired width and height for resizing
 	desired_width = 100  # Set your desired width in pixels
@@ -381,9 +382,7 @@ def _show_border_img(ax, relay_state, is_warning=False):
 
 def show_hide_items(items_to_hide=[], items_to_show=[], event=None):
 	print('Event: ', str(event))
-	print('items_to_hide', items_to_hide)
 	for item in items_to_hide:
-		print('>>>>>>>>>>>>>>>>>>>>>>>>>', str(item))
 		item.set_visible(False)
 		item.set_zorder(0) # send backward
 
@@ -402,9 +401,21 @@ def turn_off_relay(params):
 	_show_border(border_ax, OPEN)
 
 
-def confirm_off_relay(self):
+def switch_off_relay(self, is_warning):
+	change_relay_state(self, 'confirm')
+	state_action(self, is_warning)
+
+
+def confirm_off_relay(self, is_warning):
 	# TO DO: communicate to relay module
 	change_relay_state(self, 'processing')
+	state_action(self, is_warning)
+
+
+def cancel_off_relay(self, is_warning):
+	change_relay_state(self, 'on')
+	state_action(self, is_warning)
+
 
 def create_step_1_elements(fig, border_ax=None, is_warning=False):
 	'''
@@ -690,13 +701,20 @@ def change_relay_state(self, next_state):
 	Manage the state of the relay section
 	'''
 	try:
-		print(f'Changing state from "{self.relay_state}" to "{next_state}"')
+		print(f'Changing state from "{self.relay_state}" to "{next_state}".')
 
 		current_state_obj = RELAY_STATES[self.relay_state]
 		next_state_obj = RELAY_STATES[next_state]
 
-		if self.relay_state not in next_state_obj['before'] or next_state not in current_state_obj['after']:
-			raise Exception(f'Invalid state transition from "{self.relay_state}" to "{next_state}"')
+		if self.relay_state not in next_state_obj['before']:
+			exception_msg = f'Invalid state transition from "{self.relay_state}" to "{next_state}"'
+			valid_values_msg = f'Valid previous states for "{next_state}": {str(next_state_obj["before"])}'
+			raise Exception(f'{exception_msg}\n{valid_values_msg}')
+
+		elif next_state not in current_state_obj['after']:
+			exception_msg = f'Invalid state transition from "{self.relay_state}" to "{next_state}"'
+			valid_values_msg = f'Valid next states for "{self.relay_state}" are: {str(current_state_obj["after"])}'
+			raise Exception(f'{exception_msg}\n{valid_values_msg}')
 
 		self.relay_state = next_state
 	except Exception as e:
@@ -708,44 +726,46 @@ def state_action(self, is_warning=False):
 	React to the state action.
 	Should be called after change_relay_state
 	'''
+	show_hide_items(items_to_hide=self.all_elements)
+
 	if self.relay_state == 'loading':
 		print(self.relay_state)
-		show_hide_items(items_to_hide=self.all_elements, items_to_show=self.loading_elements)
 		_show_border_img(self.border_ax, self.relay_state, is_warning)
+		show_hide_items(items_to_show=self.loading_elements)
 
 	elif self.relay_state == 'on':
-		print(self.relay_state, self.on_elements)
-		show_hide_items(items_to_hide=self.all_elements, items_to_show=self.on_elements)
+		print(self.relay_state)
 		_show_border_img(self.border_ax, self.relay_state, is_warning)
+		show_hide_items(items_to_show=self.on_elements)
 
 	elif self.relay_state == 'confirm':
 		print(self.relay_state)
-		show_hide_items(items_to_hide=self.all_elements, items_to_show=self.confirm_elements)
 		_show_border_img(self.border_ax, self.relay_state, is_warning)
+		show_hide_items(items_to_show=self.confirm_elements)
 
 	elif self.relay_state == 'processing':
 		print(self.relay_state)
-		show_hide_items(items_to_hide=self.all_elements, items_to_show=self.processing_elements)
 		_show_border_img(self.border_ax, self.relay_state, is_warning)
+		show_hide_items(items_to_show=self.processing_elements)
 
 	elif self.relay_state == 'off':
 		print(self.relay_state)
-		show_hide_items(items_to_hide=self.all_elements, items_to_show=self.off_elements)
 		_show_border_img(self.border_ax, self.relay_state, is_warning)
+		show_hide_items(items_to_show=self.off_elements)
 
 	elif self.relay_state == 'disabled':
 		print(self.relay_state)
-		show_hide_items(items_to_hide=self.all_elements, items_to_show=self.disabled_elements)
 		_show_border_img(self.border_ax, self.relay_state, is_warning)
+		show_hide_items(items_to_show=self.disabled_elements)
 
 	elif self.relay_state == 'error':
 		print(self.relay_state)
-		show_hide_items(items_to_hide=self.all_elements, items_to_show=self.error_elements)
 		_show_border_img(self.border_ax, self.relay_state, is_warning)
-
+		show_hide_items(items_to_show=self.error_elements)
 
 
 def _create_relay_section(self, fig, is_warning):
+	pass
 	border_ax = fig.add_subplot(313)
 	border_ax.set_facecolor(GREY)
 	_clean_up_axis(border_ax)
@@ -771,19 +791,17 @@ def _create_relay_section(self, fig, is_warning):
 	self.disabled_elements = disabled_elements
 	self.error_elements = error_elements
 
-	self.all_elements = [
-		loading_elements,
-		on_elements,
-		confirm_elements,
-		processing_elements,
-		off_elements,
-		disabled_elements,
-		error_elements,
-	]
+	self.all_elements = loading_elements + \
+		on_elements + \
+		confirm_elements + \
+		processing_elements + \
+		off_elements + \
+		disabled_elements + \
+		error_elements
 
-	turn_off_btn.on_clicked(lambda event: change_relay_state(self, 'confirm'))
-	confirm_off_btn.on_clicked(lambda event: confirm_off_relay(self))
-	cancel_btn.on_clicked(lambda event: change_relay_state(self, 'on'))
+	turn_off_btn.on_clicked(lambda event: switch_off_relay(self, is_warning))
+	cancel_btn.on_clicked(lambda event: cancel_off_relay(self, is_warning))
+	confirm_off_btn.on_clicked(lambda event: confirm_off_relay(self, is_warning))
 
 
 def show_multi_dim_popup(self, event_values):
@@ -825,6 +843,11 @@ def show_multi_dim_popup(self, event_values):
 
 		# 4 - set up relay switch
 		_create_relay_section(self, fig, is_warning)
+
+		# Test only
+		self.relay_state = 'loading'
+		change_relay_state(self, 'on')
+		state_action(self, is_warning)
 
 		# Also keep a reference to the figure
 		self.alert_window = fig
@@ -885,22 +908,7 @@ class PopUp:
 		print('SHOW POPUP!')
 		show_multi_dim_popup(self, TEST_EVENT_VALUES)
 
-		# start_time = time.time()
-		# while time.time() - start_time < 10:
-		# 	change_relay_state()
-
-
-		# RELAY_STATE_ARR = list(RELAY_STATES.keys())
-		# RELAY_STATE_ARR = ['loading', 'on', 'confirm', 'processing', 'off', 'disabled', 'error']
-		RELAY_STATE_ARR = ['on', 'confirm', 'processing', 'off', 'disabled', 'error']
-		# print(RELAY_STATE_ARR)
-		for state in RELAY_STATE_ARR:
-			print(f'STATE: {state}')
-			change_relay_state(self, state)
-			time.sleep(1)
-			state_action(self)
-
-		self.alert_window.canvas.start_event_loop(1)
+		self.alert_window.canvas.start_event_loop(5)
 		# self.alert_window.canvas.start_event_loop(10)
 
 POPUP = PopUp()
