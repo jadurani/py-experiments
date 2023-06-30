@@ -4,7 +4,7 @@ from matplotlib.widgets import Button
 import matplotlib.image as mpimg
 from main import COLOR, printE
 import unit_converter as UC
-from popup_helper import clean_up_axis
+from popup_helper import _clean_up_axis
 import helpers
 
 import time
@@ -132,6 +132,24 @@ TEST_EVENT_VALUES = {
 }
 
 
+def _clean_up_axis(ax):
+	'''
+	Sets up the axes such that it will look like a plain rectangle.
+	'''
+	ax.xaxis.set_tick_params(labelbottom=False)
+	ax.yaxis.set_tick_params(labelleft=False)
+
+	# Hide X and Y axes tick marks
+	ax.set_xticks([])
+	ax.set_yticks([])
+
+	# hide spines
+	ax.spines['top'].set_visible(False)
+	ax.spines['right'].set_visible(False)
+	ax.spines['left'].set_visible(False)
+	ax.spines['bottom'].set_visible(False)
+
+
 def _is_warning(over_drift_thresh):
 	'''
 	If the drift in any direction is equal to or greater than the specified
@@ -253,7 +271,7 @@ def _create_banner(fig, is_warning, banner_color):
 
 	# create axes that will serve as the banner
 	ax_banner = fig.add_subplot(311)
-	clean_up_axis(ax_banner)
+	_clean_up_axis(ax_banner)
 	ax_banner.set_position([0, 0.75, 1, 0.5])
 
 	# set background color
@@ -414,7 +432,7 @@ def create_on_elements(fig, is_warning=False):
 
 	# Create button axis
 	turn_off_btn_ax = fig.add_axes([0.575, 0.07, 0.125, 0.055])  # Adjust the values as per your desired position and size
-	clean_up_axis(turn_off_btn_ax)
+	_clean_up_axis(turn_off_btn_ax)
 
 	# Create button. Clicking this should show "Step 2"
 	turn_off_btn = Button(ax=turn_off_btn_ax, label='Turn off', color=el_color, hovercolor=el_color_hover)
@@ -447,7 +465,7 @@ def create_confirm_elements(fig, is_warning=False):
 
 	# Confirm turn off axis
 	turn_off_btn_ax = fig.add_axes([0.31, 0.07, 0.2, 0.055])  # Adjust the values as per your desired position and size
-	clean_up_axis(turn_off_btn_ax)
+	_clean_up_axis(turn_off_btn_ax)
 
 	# Create Confirm Turn Off Button. Clicking this should show "Processing" Screen - action not provided in this function
 	turn_off_btn = Button(ax=turn_off_btn_ax, label='Yes, turn it off', color=ACCENT, hovercolor=ACCENT_HOVER)
@@ -456,7 +474,7 @@ def create_confirm_elements(fig, is_warning=False):
 
 	# Cancel turn off axis
 	cancel_btn_ax = fig.add_axes([0.5225, 0.07, 0.2, 0.055])  # Adjust the values as per your desired position and size
-	clean_up_axis(cancel_btn_ax)
+	_clean_up_axis(cancel_btn_ax)
 
 	# Create Cancel Turn Off Button. Clicking this should show "On" Screen - action not provided in this function
 	cancel_btn = Button(ax=cancel_btn_ax, label='No, keep it on', color=el_color, hovercolor=el_color_hover)
@@ -615,7 +633,7 @@ def state_action(self, is_warning=False):
 def _create_relay_section(self, fig, is_warning):
 	border_ax = fig.add_subplot(313)
 	border_ax.set_facecolor(GREY)
-	clean_up_axis(border_ax)
+	_clean_up_axis(border_ax)
 
 	loading_elements = create_loading_elements(fig)
 	on_elements, turn_off_btn = create_on_elements(fig, is_warning)
