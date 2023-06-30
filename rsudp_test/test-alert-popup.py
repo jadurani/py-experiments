@@ -6,6 +6,8 @@ from main import COLOR, printE
 import unit_converter as UC
 import helpers
 
+import time
+
 import matplotlib.pyplot as plt
 from matplotlib import use
 from matplotlib import rcParams
@@ -27,6 +29,50 @@ COLOR = {
 	'bold': "\033[1m"
 }
 
+RELAY_STATES = {
+	'loading': {
+		'is_start': True,
+		'is_end': False,
+		'before': [],
+		'after': ['on', 'processing', 'error']
+	},
+	'on': {
+		'is_start': False,
+		'is_end': False,
+		'before': ['loading'],
+		'after': ['confirm']
+	},
+	'confirm': {
+		'is_start': False,
+		'is_end': False,
+		'before': ['on'],
+		'after': ['processing', 'on']
+	},
+	'processing': {
+		'is_start': False,
+		'is_end': False,
+		'before': ['confirm'],
+		'after': ['off', 'error']
+	},
+	'off': {
+		'is_start': False,
+		'is_end': True,
+		'before': ['processing'],
+		'after': []
+	},
+	'disabled': {
+		'is_start': False,
+		'is_end': True,
+		'before': ['loading'],
+		'after': []
+	},
+	'error': {
+		'is_start': False,
+		'is_end': True,
+		'before': ['loading', 'processing'],
+		'after': []
+	},
+}
 
 YELLOW = '#FFA723'
 RED = '#B80303'
@@ -436,8 +482,44 @@ def create_step_3_elements(fig, border_ax=None):
 	step_3_elements = [step_3_text_1, step_3_text_2]
 	return step_3_elements, border_ax
 
+def change_relay_state(self, next_state):
+	'''
+	Manage the state of the relay section
+	'''
+	try:
+		current_state_obj = RELAY_STATES[self.relay_state]
+		next_state_obj = RELAY_STATES[next_state]
+
+		if self.relay_state not in next_state_obj['before'] or next_state not in current_state_obj['after']:
+			raise Exception(f'Invalid state transition from "{self.relay_state}" to "{next_state}"')
+
+		self.relay_state = next_state
+	except Exception as e:
+		print(e)
+
+def state_action(self):
+	'''
+	React to the state action.
+	Should be called after change_relay_state
+	'''
+	if self.relay_state == 'loading':
+		print(self.relay_state)
+	elif self.relay_state == 'on':
+		print(self.relay_state)
+	elif self.relay_state == 'confirm':
+		print(self.relay_state)
+	elif self.relay_state == 'processing':
+		print(self.relay_state)
+	elif self.relay_state == 'off':
+		print(self.relay_state)
+	elif self.relay_state == 'disabled':
+		print(self.relay_state)
+	elif self.relay_state == 'error':
+		print(self.relay_state)
+
 
 def _create_relay_section(fig, is_warning):
+
 	# START - STEP 3
 	step_3_elements, border_ax = create_step_3_elements(fig)
 	show_hide_items(items_to_hide=step_3_elements)
@@ -450,7 +532,6 @@ def _create_relay_section(fig, is_warning):
 	step_1_elements, step_1_btn, border_ax = create_step_1_elements(fig, border_ax=border_ax, is_warning=is_warning)
 	# NOTE: instead of hiding, we're showing, unlike in step 3 and 2
 	show_hide_items(items_to_show=step_1_elements)
-
 
 	# START - ACTIONS: Set up lambda functions and pass the required arguments
 	step_1_btn.on_clicked(lambda event: show_hide_items(items_to_hide=step_1_elements, items_to_show=step_2_elements, event=event))
@@ -542,6 +623,8 @@ def prepare_popup(self, plt, autoclose, is_relay_enabled):
 	self.prev_pga = None # in m/s**2
 	self.prev_pgd = None # in m
 
+	self.relay_state = 'loading' # initial state
+
 class PopUp:
 	def __init__(self):
 		self.sender = 'POP UP'
@@ -549,16 +632,26 @@ class PopUp:
 
 	def prepare(self):
 		print('PREPARE POPUP!')
-		prepare_popup(self)
-
-	def prepare(self):
-		print('PREPARE POPUP!')
 		prepare_popup(self, plt=plt, autoclose=False, is_relay_enabled=True)
 
 	def show_popup(self):
-		print('PREPARE POPUP!')
-		show_multi_dim_popup(self, TEST_EVENT_VALUES)
-		self.alert_window.canvas.start_event_loop(10)
+		print('SHOW POPUP!')
+		# show_multi_dim_popup(self, TEST_EVENT_VALUES)
+
+		# start_time = time.time()
+		# while time.time() - start_time < 10:
+		# 	change_relay_state()
+
+
+		# RELAY_STATE_ARR = list(RELAY_STATES.keys())
+		RELAY_STATE_ARR = ['loading', 'on', 'confirm', 'processing', 'off', 'disabled', 'error']
+		print(RELAY_STATE_ARR)
+		for state in RELAY_STATE_ARR:
+			change_relay_state(self, state)
+			time.sleep(1)
+			state_action(self)
+
+		# self.alert_window.canvas.start_event_loop(10)
 
 POPUP = PopUp()
 POPUP.prepare()
