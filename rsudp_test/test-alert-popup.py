@@ -376,17 +376,7 @@ def show_hide_items(items_to_hide=[], items_to_show=[], event=None):
 		item.set_zorder(99) # send forward
 
 
-def turn_off_relay(params):
-	print('TO DO: Do something to turn off the relay')
-
-	show_hide_items(items_to_hide=params['items_to_hide'], items_to_show=params['items_to_show'], event='Turn off relay')
-
-	border_ax = params['border_ax']
-	border_ax.set_position([0.26, -0.125, 0.5, 0.5])
-	_show_border(border_ax, OPEN)
-
-
-def switch_off_relay(self, is_warning):
+def turn_off_relay(self, is_warning):
 	change_relay_state(self, 'confirm')
 	state_action(self, is_warning)
 
@@ -400,117 +390,6 @@ def confirm_off_relay(self, is_warning):
 def cancel_off_relay(self, is_warning):
 	change_relay_state(self, 'on')
 	state_action(self, is_warning)
-
-
-def create_step_1_elements(fig, border_ax=None, is_warning=False):
-	'''
-	Step 1: Inform the instrument operator that the relay status is ON
-					- Show a button to turn off the relay module.
-					- Note that the button's click handler is NOT in this function.
-	'''
-
-	# Create the border (the image)
-	if border_ax is None:
-		border_ax = fig.add_subplot(313)
-		border_ax.set_facecolor(GREY)
-		clean_up_axis(border_ax)
-
-	border_ax.set_position([0.25, -0.125, 0.5, 0.5])
-	border_color = CLOSED_RED if is_warning else CLOSED_YELLOW
-	_show_border(border_ax, border_color)
-
-	el_color = RED if is_warning else YELLOW
-	el_color_hover = RED_HOVER if is_warning else YELLOW_HOVER
-
-	# Section title and subtitle
-	section_title = fig.text(0.31, 0.15, 'Relay Status: ON', ha='left', va='center', fontsize=14, color=el_color, weight='bold')
-	section_subtitle = fig.text(0.31, 0.095, 'IoT systems activated.', ha='left', va='center', fontsize=10, color=BLACK)
-
-	# Create button axis
-	step_1_btn_ax = fig.add_axes([0.575, 0.07, 0.125, 0.055])  # Adjust the values as per your desired position and size
-	clean_up_axis(step_1_btn_ax)
-
-	# Create button. Clicking this should show "Step 2"
-	step_1_btn = Button(ax=step_1_btn_ax, label='Turn off', color=el_color, hovercolor=el_color_hover)
-	step_1_btn.label.set_color(WHITE)
-	step_1_btn.label.set_weight('bold')
-
-	# Compile section elements
-	step_1_elements = [section_title, section_subtitle, step_1_btn_ax]
-	return step_1_elements, step_1_btn, border_ax
-
-
-def create_step_2_elements(fig, border_ax=None, is_warning=False):
-	'''
-	Step 2: Confirm with the instrument operator that they want to turn off the relay module.
-					- Show two button
-						- Button A: Yes, turn it off
-						- Button B: No, keep it on
-					- Note that the buttons' click handlers are NOT in this function.
-	'''
-
-	# Create the border (the image)
-	if border_ax is None:
-		border_ax = fig.add_subplot(313)
-		border_ax.set_facecolor(GREY)
-		clean_up_axis(border_ax)
-
-	border_ax.set_position([0.26, -0.125, 0.5, 0.5])
-	border_color = CLOSED_RED if is_warning else CLOSED_YELLOW
-	_show_border(border_ax, border_color)
-
-	el_color = RED if is_warning else YELLOW
-	el_color_hover = RED_HOVER if is_warning else YELLOW_HOVER
-
-
-	# Section title (question)
-	step_2_text_1 = fig.text(0.31, 0.15, 'Turn off Relay Module?', ha='left', va='center', fontsize=14, color=el_color, weight='bold')
-
-	# Create Button A axis
-	step_2_btn_a_ax = fig.add_axes([0.31, 0.07, 0.2, 0.055])  # Adjust the values as per your desired position and size
-	clean_up_axis(step_2_btn_a_ax)
-
-	# Create Button A. Clicking this should show "Step 3" - action not provided in this function
-	step_2_btn_a = Button(ax=step_2_btn_a_ax, label='Yes, turn it off', color=ACCENT, hovercolor=ACCENT_HOVER)
-	step_2_btn_a.label.set_color(BLACK)
-	step_2_btn_a.label.set_weight('bold')
-
-	step_2_btn_b_ax = fig.add_axes([0.5225, 0.07, 0.2, 0.055])  # Adjust the values as per your desired position and size
-	clean_up_axis(step_2_btn_b_ax)
-
-	# Create Button B. Clicking this should show "Step 1" again - - action not provided in this function
-	step_2_btn_b = Button(ax=step_2_btn_b_ax, label='No, keep it on', color=el_color, hovercolor=el_color_hover)
-	step_2_btn_b.label.set_color(WHITE)
-	step_2_btn_b.label.set_weight('bold')
-
-	# Compile section elements
-	step_2_elements = [step_2_text_1, step_2_btn_a_ax, step_2_btn_b_ax]
-	return step_2_elements, step_2_btn_a, step_2_btn_b, border_ax
-
-
-def create_step_3_elements(fig, border_ax=None):
-	'''
-	Step 3: Inform the instrument operator that the relay status is OFF
-					- In this state, the operator cannot click any button.
-					- In order for the relay module to turn on, the STA/LTA Threshold should
-						again be breached. Only the turning off action can be done manually.
-	'''
-
-	# Create the border (the image)
-	if border_ax is None:
-		border_ax = fig.add_subplot(313)
-		border_ax.set_facecolor(GREY)
-		clean_up_axis(border_ax)
-
-	# Section title and subtitle
-	step_3_text_1 = fig.text(0.31, 0.15, 'Relay Status: OFF', ha='left', va='center', fontsize=14, color=BLACK, weight='bold')
-	step_3_text_2 = fig.text(0.31, 0.095, 'IoT systems deactivated.', ha='left', va='center', fontsize=10, color=BLACK)
-	# step_3_text_1 = fig.text(0.31, 0.275, 'Relay Status: DISABLED', ha='left', va='center', fontsize=14, color=BLACK, weight='bold')
-	# step_3_text_2 = fig.text(0.31, 0.215, 'Module disabled in your settings file.', ha='left', va='center', fontsize=10, color=BLACK)
-
-	# Compile section elements
-	step_3_elements = [step_3_text_1, step_3_text_2]
-	return step_3_elements, border_ax
 
 
 def create_loading_elements(fig):
@@ -783,7 +662,7 @@ def _create_relay_section(self, fig, is_warning):
 		disabled_elements + \
 		error_elements
 
-	turn_off_btn.on_clicked(lambda event: switch_off_relay(self, is_warning))
+	turn_off_btn.on_clicked(lambda event: turn_off_relay(self, is_warning))
 	cancel_btn.on_clicked(lambda event: cancel_off_relay(self, is_warning))
 	confirm_off_btn.on_clicked(lambda event: confirm_off_relay(self, is_warning))
 
