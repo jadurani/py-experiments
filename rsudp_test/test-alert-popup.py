@@ -4,6 +4,7 @@ from matplotlib.widgets import Button
 import matplotlib.image as mpimg
 from main import COLOR, printE
 import unit_converter as UC
+from popup_helper import clean_up_axis
 import helpers
 
 import time
@@ -130,22 +131,6 @@ TEST_EVENT_VALUES = {
 		}
 }
 
-def _clean_up_axis(ax):
-	'''
-	Sets up the axes such that it will look like a plain rectangle.
-	'''
-	ax.xaxis.set_tick_params(labelbottom=False)
-	ax.yaxis.set_tick_params(labelleft=False)
-
-	# Hide X and Y axes tick marks
-	ax.set_xticks([])
-	ax.set_yticks([])
-
-	# hide spines
-	ax.spines['top'].set_visible(False)
-	ax.spines['right'].set_visible(False)
-	ax.spines['left'].set_visible(False)
-	ax.spines['bottom'].set_visible(False)
 
 def _is_warning(over_drift_thresh):
 	'''
@@ -268,7 +253,7 @@ def _create_banner(fig, is_warning, banner_color):
 
 	# create axes that will serve as the banner
 	ax_banner = fig.add_subplot(311)
-	_clean_up_axis(ax_banner)
+	clean_up_axis(ax_banner)
 	ax_banner.set_position([0, 0.75, 1, 0.5])
 
 	# set background color
@@ -428,7 +413,7 @@ def create_step_1_elements(fig, border_ax=None, is_warning=False):
 	if border_ax is None:
 		border_ax = fig.add_subplot(313)
 		border_ax.set_facecolor(GREY)
-		_clean_up_axis(border_ax)
+		clean_up_axis(border_ax)
 
 	border_ax.set_position([0.25, -0.125, 0.5, 0.5])
 	border_color = CLOSED_RED if is_warning else CLOSED_YELLOW
@@ -443,7 +428,7 @@ def create_step_1_elements(fig, border_ax=None, is_warning=False):
 
 	# Create button axis
 	step_1_btn_ax = fig.add_axes([0.575, 0.07, 0.125, 0.055])  # Adjust the values as per your desired position and size
-	_clean_up_axis(step_1_btn_ax)
+	clean_up_axis(step_1_btn_ax)
 
 	# Create button. Clicking this should show "Step 2"
 	step_1_btn = Button(ax=step_1_btn_ax, label='Turn off', color=el_color, hovercolor=el_color_hover)
@@ -468,7 +453,7 @@ def create_step_2_elements(fig, border_ax=None, is_warning=False):
 	if border_ax is None:
 		border_ax = fig.add_subplot(313)
 		border_ax.set_facecolor(GREY)
-		_clean_up_axis(border_ax)
+		clean_up_axis(border_ax)
 
 	border_ax.set_position([0.26, -0.125, 0.5, 0.5])
 	border_color = CLOSED_RED if is_warning else CLOSED_YELLOW
@@ -483,7 +468,7 @@ def create_step_2_elements(fig, border_ax=None, is_warning=False):
 
 	# Create Button A axis
 	step_2_btn_a_ax = fig.add_axes([0.31, 0.07, 0.2, 0.055])  # Adjust the values as per your desired position and size
-	_clean_up_axis(step_2_btn_a_ax)
+	clean_up_axis(step_2_btn_a_ax)
 
 	# Create Button A. Clicking this should show "Step 3" - action not provided in this function
 	step_2_btn_a = Button(ax=step_2_btn_a_ax, label='Yes, turn it off', color=ACCENT, hovercolor=ACCENT_HOVER)
@@ -491,7 +476,7 @@ def create_step_2_elements(fig, border_ax=None, is_warning=False):
 	step_2_btn_a.label.set_weight('bold')
 
 	step_2_btn_b_ax = fig.add_axes([0.5225, 0.07, 0.2, 0.055])  # Adjust the values as per your desired position and size
-	_clean_up_axis(step_2_btn_b_ax)
+	clean_up_axis(step_2_btn_b_ax)
 
 	# Create Button B. Clicking this should show "Step 1" again - - action not provided in this function
 	step_2_btn_b = Button(ax=step_2_btn_b_ax, label='No, keep it on', color=el_color, hovercolor=el_color_hover)
@@ -515,7 +500,7 @@ def create_step_3_elements(fig, border_ax=None):
 	if border_ax is None:
 		border_ax = fig.add_subplot(313)
 		border_ax.set_facecolor(GREY)
-		_clean_up_axis(border_ax)
+		clean_up_axis(border_ax)
 
 	# Section title and subtitle
 	step_3_text_1 = fig.text(0.31, 0.15, 'Relay Status: OFF', ha='left', va='center', fontsize=14, color=BLACK, weight='bold')
@@ -566,7 +551,7 @@ def create_on_elements(fig, is_warning=False):
 
 	# Create button axis
 	turn_off_btn_ax = fig.add_axes([0.575, 0.07, 0.125, 0.055])  # Adjust the values as per your desired position and size
-	_clean_up_axis(turn_off_btn_ax)
+	clean_up_axis(turn_off_btn_ax)
 
 	# Create button. Clicking this should show "Step 2"
 	turn_off_btn = Button(ax=turn_off_btn_ax, label='Turn off', color=el_color, hovercolor=el_color_hover)
@@ -599,7 +584,7 @@ def create_confirm_elements(fig, is_warning=False):
 
 	# Confirm turn off axis
 	turn_off_btn_ax = fig.add_axes([0.31, 0.07, 0.2, 0.055])  # Adjust the values as per your desired position and size
-	_clean_up_axis(turn_off_btn_ax)
+	clean_up_axis(turn_off_btn_ax)
 
 	# Create Confirm Turn Off Button. Clicking this should show "Processing" Screen - action not provided in this function
 	turn_off_btn = Button(ax=turn_off_btn_ax, label='Yes, turn it off', color=ACCENT, hovercolor=ACCENT_HOVER)
@@ -608,7 +593,7 @@ def create_confirm_elements(fig, is_warning=False):
 
 	# Cancel turn off axis
 	cancel_btn_ax = fig.add_axes([0.5225, 0.07, 0.2, 0.055])  # Adjust the values as per your desired position and size
-	_clean_up_axis(cancel_btn_ax)
+	clean_up_axis(cancel_btn_ax)
 
 	# Create Cancel Turn Off Button. Clicking this should show "On" Screen - action not provided in this function
 	cancel_btn = Button(ax=cancel_btn_ax, label='No, keep it on', color=el_color, hovercolor=el_color_hover)
@@ -765,10 +750,9 @@ def state_action(self, is_warning=False):
 
 
 def _create_relay_section(self, fig, is_warning):
-	pass
 	border_ax = fig.add_subplot(313)
 	border_ax.set_facecolor(GREY)
-	_clean_up_axis(border_ax)
+	clean_up_axis(border_ax)
 
 	loading_elements = create_loading_elements(fig)
 	on_elements, turn_off_btn = create_on_elements(fig, is_warning)
@@ -866,6 +850,7 @@ def hide_popup(self, evt=None):
 		self.alert_window = None
 		self.prev_pga = None
 		self.prev_pgd = None
+
 
 def prepare_popup(self, plt, autoclose, is_relay_enabled):
 	global PLT
