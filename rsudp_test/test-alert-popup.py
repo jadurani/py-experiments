@@ -319,22 +319,6 @@ def _create_table(fig, highlight_color, event_values):
 	table.scale(1.2, 2.5)
 
 
-def _show_border(ax, border_state):
-	if ax.images:
-		ax.images[0].remove()
-
-	# Load the SVG image using mpimg
-	image_loc = IMAGE_LOCS[border_state]
-	image = mpimg.imread(image_loc)
-
-	# Calculate the desired width and height for resizing
-	desired_width = 100  # Set your desired width in pixels
-	aspect_ratio = image.shape[1] / image.shape[0]
-	desired_height = desired_width / aspect_ratio
-
-	# Plot the resized image on the axes
-	ax.imshow(image, interpolation='bilinear', extent=(0, desired_width, 0, desired_height))
-
 def _show_border_img(ax, relay_state, is_warning=False):
 	if ax.images:
 		ax.images[0].remove()
