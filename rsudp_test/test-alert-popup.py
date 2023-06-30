@@ -350,16 +350,47 @@ def _show_border(ax, border_state):
 	# Plot the resized image on the axes
 	ax.imshow(image, interpolation='bilinear', extent=(0, desired_width, 0, desired_height))
 
+def _show_border_img(ax, relay_state, is_warning=False):
+	if ax.images:
+		ax.images[0].remove()
+
+	# ['loading', 'on', 'confirm', 'processing', 'off', 'disabled', 'error']
+
+	if relay_state in ['loading', 'processing']:
+		image_loc = IMAGE_LOCS['loading']
+	elif relay_state in ['off', 'disabled']:
+		image_loc = IMAGE_LOCS['open']
+	elif relay_state in ['on', 'confirm']:
+		border_color = CLOSED_RED if is_warning else CLOSED_YELLOW
+		image_loc = IMAGE_LOCS[border_color]
+	elif relay_state == 'error':
+		image_loc = IMAGE_LOCS['error']
+	else:
+		raise Exception('Unable to find border image')
+
+	image = mpimg.imread(image_loc)
+
+	# Calculate the desired width and height for resizing
+	desired_width = 100  # Set your desired width in pixels
+	aspect_ratio = image.shape[1] / image.shape[0]
+	desired_height = desired_width / aspect_ratio
+
+	# Plot the resized image on the axes
+	ax.imshow(image, interpolation='bilinear', extent=(0, desired_width, 0, desired_height))
+
 
 def show_hide_items(items_to_hide=[], items_to_show=[], event=None):
 	print('Event: ', str(event))
+	print('items_to_hide', items_to_hide)
 	for item in items_to_hide:
+		print('>>>>>>>>>>>>>>>>>>>>>>>>>', str(item))
 		item.set_visible(False)
 		item.set_zorder(0) # send backward
 
 	for item in items_to_show:
 		item.set_visible(True)
 		item.set_zorder(99) # send forward
+
 
 def turn_off_relay(params):
 	print('TO DO: Do something to turn off the relay')
@@ -371,6 +402,9 @@ def turn_off_relay(params):
 	_show_border(border_ax, OPEN)
 
 
+def confirm_off_relay(self):
+	# TO DO: communicate to relay module
+	change_relay_state(self, 'processing')
 
 def create_step_1_elements(fig, border_ax=None, is_warning=False):
 	'''
@@ -483,32 +517,57 @@ def create_step_3_elements(fig, border_ax=None):
 	return step_3_elements, border_ax
 
 
-def create_loading_elements(self):
+def create_loading_elements(fig):
 	'''
 	LOADING Screen: Show screen while confirming an active connection to the Arduino unit.
 	- In this state, the operator cannot click any button.
 
-	:param self: The instance of the class
+	:param fig: The matplotlib figure where the popup elements are displayed on
 	:rtype: Array
 	:return: Returns an array containing the elements of this screen
 	'''
-	pass
+
+	# Section title and subtitle
+	loading_text_1 = fig.text(0.31, 0.15, 'Loading...', ha='left', va='center', fontsize=14, color=BLACK, weight='bold')
+	loading_text_2 = fig.text(0.31, 0.095, 'Contacting your Arduino unit...', ha='left', va='center', fontsize=10, color=BLACK)
+
+	# Compile section elements
+	loading_elements = [loading_text_1, loading_text_2]
+	return loading_elements
 
 
-def create_on_elements(self):
+def create_on_elements(fig, is_warning=False):
 	'''
 	ON Screen: Inform the instrument operator that the relay status is ON
 	- Show a button to turn off the relay module.
 	- Note that the button's click handler is NOT in this function.
 
-	:param self: The instance of the class
-	:rtype: Array
-	:return: Returns an array containing the elements of this screen
+	:param fig: The matplotlib figure where the popup elements are displayed on
+	:rtype: Array, button element
+	:return: Returns an array containing the elements of this screen and the button element
 	'''
-	pass
+	el_color = RED if is_warning else YELLOW
+	el_color_hover = RED_HOVER if is_warning else YELLOW_HOVER
+
+	# Section title and subtitle
+	section_title = fig.text(0.31, 0.15, 'Relay Status: ON', ha='left', va='center', fontsize=14, color=el_color, weight='bold')
+	section_subtitle = fig.text(0.31, 0.095, 'IoT systems activated.', ha='left', va='center', fontsize=10, color=BLACK)
+
+	# Create button axis
+	turn_off_btn_ax = fig.add_axes([0.575, 0.07, 0.125, 0.055])  # Adjust the values as per your desired position and size
+	_clean_up_axis(turn_off_btn_ax)
+
+	# Create button. Clicking this should show "Step 2"
+	turn_off_btn = Button(ax=turn_off_btn_ax, label='Turn off', color=el_color, hovercolor=el_color_hover)
+	turn_off_btn.label.set_color(WHITE)
+	turn_off_btn.label.set_weight('bold')
+
+	# Compile section elements
+	turn_off_elements = [section_title, section_subtitle, turn_off_btn_ax]
+	return turn_off_elements, turn_off_btn
 
 
-def create_confirm_elements(self):
+def create_confirm_elements(fig, is_warning=False):
 	'''
 	CONFIRM Screen: Confirm with the instrument operator that they want to turn off the relay module.
 	- Show two button
@@ -516,67 +575,114 @@ def create_confirm_elements(self):
 		- Button B: No, keep it on
 	- Note that the buttons' click handlers are NOT in this function.
 
-	:param self: The instance of the class
+	:param fig: The matplotlib figure where the popup elements are displayed on
 	:rtype: Array
 	:return: Returns an array containing the elements of this screen
 	'''
-	pass
+
+	el_color = RED if is_warning else YELLOW
+	el_color_hover = RED_HOVER if is_warning else YELLOW_HOVER
+
+	# Section title (question)
+	section_title = fig.text(0.31, 0.15, 'Turn off Relay Module?', ha='left', va='center', fontsize=14, color=el_color, weight='bold')
+
+	# Confirm turn off axis
+	turn_off_btn_ax = fig.add_axes([0.31, 0.07, 0.2, 0.055])  # Adjust the values as per your desired position and size
+	_clean_up_axis(turn_off_btn_ax)
+
+	# Create Confirm Turn Off Button. Clicking this should show "Processing" Screen - action not provided in this function
+	turn_off_btn = Button(ax=turn_off_btn_ax, label='Yes, turn it off', color=ACCENT, hovercolor=ACCENT_HOVER)
+	turn_off_btn.label.set_color(BLACK)
+	turn_off_btn.label.set_weight('bold')
+
+	# Cancel turn off axis
+	cancel_btn_ax = fig.add_axes([0.5225, 0.07, 0.2, 0.055])  # Adjust the values as per your desired position and size
+	_clean_up_axis(cancel_btn_ax)
+
+	# Create Cancel Turn Off Button. Clicking this should show "On" Screen - action not provided in this function
+	cancel_btn = Button(ax=cancel_btn_ax, label='No, keep it on', color=el_color, hovercolor=el_color_hover)
+	cancel_btn.label.set_color(WHITE)
+	cancel_btn.label.set_weight('bold')
+
+	# Compile section elements
+	step_2_elements = [section_title, turn_off_btn_ax, cancel_btn_ax]
+	return step_2_elements, turn_off_btn, cancel_btn
 
 
-def create_processing_elements(self):
+def create_processing_elements(fig):
 	'''
 	PROCESSING Screen: Show screen while communicating with the Arduino unit.
 	- In this state, the operator cannot click any button.
 
-	:param self: The instance of the class
+	:param fig: The matplotlib figure where the popup elements are displayed on
 	:rtype: Array
 	:return: Returns an array containing the elements of this screen
 	'''
-	pass
+	# Section title and subtitle
+	processing_text_1 = fig.text(0.31, 0.15, 'Processing...', ha='left', va='center', fontsize=14, color=BLACK, weight='bold')
+	processing_text_2 = fig.text(0.31, 0.095, 'Sending message to Arduino...', ha='left', va='center', fontsize=10, color=BLACK)
+
+	# Compile section elements
+	processing_elements = [processing_text_1, processing_text_2]
+	return processing_elements
 
 
-def create_off_elements(self):
+def create_off_elements(fig):
 	'''
 	OFF Screen: Inform the instrument operator that the relay status is OFF
 	- In this state, the operator cannot click any button.
 	- In order for the relay module to turn on, the STA/LTA Threshold should
 		again be breached. Only the turning off action can be done manually.
 
-	:param self: The instance of the class
+	:param fig: The matplotlib figure where the popup elements are displayed on
 	:rtype: Array
 	:return: Returns an array containing the elements of this screen
 	'''
+	# Section title and subtitle
+	off_text_1 = fig.text(0.31, 0.15, 'Relay Status: OFF', ha='left', va='center', fontsize=14, color=BLACK, weight='bold')
+	off_text_2 = fig.text(0.31, 0.095, 'IoT systems deactivated.', ha='left', va='center', fontsize=10, color=BLACK)
 
-	pass
+	# Compile section elements
+	off_elements = [off_text_1, off_text_2]
+	return off_elements
 
 
-def create_disabled_elements(self):
+def create_disabled_elements(fig):
 	'''
-	DISABLED Screen: Inform the instrument operator that the relay status is OFF
+	DISABLED Screen: The relay module is disabled.
+	- In this state, the operator cannot click any button.
+
+	:param fig: The matplotlib figure where the popup elements are displayed on
+	:rtype: Array
+	:return: Returns an array containing the elements of this screen
+	'''
+	# Section title and subtitle
+	disabled_text_1 = fig.text(0.31, 0.15, 'Relay Status: DISABLED', ha='left', va='center', fontsize=14, color=BLACK, weight='bold')
+	disabled_text_2 = fig.text(0.31, 0.095, 'Disabled in your settings file.', ha='left', va='center', fontsize=10, color=BLACK)
+
+	# Compile section elements
+	disabled_elements = [disabled_text_1, disabled_text_2]
+	return disabled_elements
+
+
+def create_error_elements(fig):
+	'''
+	ERROR Screen: Failed to contact the relay module.
 	- In this state, the operator cannot click any button.
 	- In order for the relay module to turn on, the STA/LTA Threshold should
 		again be breached. Only the turning off action can be done manually.
 
-	:param self: The instance of the class
+	:param fig: The matplotlib figure where the popup elements are displayed on
 	:rtype: Array
 	:return: Returns an array containing the elements of this screen
 	'''
-	pass
+	# Section title and subtitle
+	error_text_1 = fig.text(0.31, 0.15, 'Relay Status: ERROR', ha='left', va='center', fontsize=14, color=BLACK, weight='bold')
+	error_text_2 = fig.text(0.31, 0.095, 'Unable to contact Arduino unit.', ha='left', va='center', fontsize=10, color=BLACK)
 
-
-def create_error_elements(self):
-	'''
-	ERROR Screen: Inform the instrument operator that the relay status is OFF
-	- In this state, the operator cannot click any button.
-	- In order for the relay module to turn on, the STA/LTA Threshold should
-		again be breached. Only the turning off action can be done manually.
-
-	:param self: The instance of the class
-	:rtype: Array
-	:return: Returns an array containing the elements of this screen
-	'''
-	pass
-
+	# Compile section elements
+	error_elements = [error_text_1, error_text_2]
+	return error_elements
 
 
 def change_relay_state(self, next_state):
@@ -584,6 +690,8 @@ def change_relay_state(self, next_state):
 	Manage the state of the relay section
 	'''
 	try:
+		print(f'Changing state from "{self.relay_state}" to "{next_state}"')
+
 		current_state_obj = RELAY_STATES[self.relay_state]
 		next_state_obj = RELAY_STATES[next_state]
 
@@ -594,53 +702,88 @@ def change_relay_state(self, next_state):
 	except Exception as e:
 		print(e)
 
-def state_action(self):
+
+def state_action(self, is_warning=False):
 	'''
 	React to the state action.
 	Should be called after change_relay_state
 	'''
 	if self.relay_state == 'loading':
 		print(self.relay_state)
+		show_hide_items(items_to_hide=self.all_elements, items_to_show=self.loading_elements)
+		_show_border_img(self.border_ax, self.relay_state, is_warning)
+
 	elif self.relay_state == 'on':
-		print(self.relay_state)
+		print(self.relay_state, self.on_elements)
+		show_hide_items(items_to_hide=self.all_elements, items_to_show=self.on_elements)
+		_show_border_img(self.border_ax, self.relay_state, is_warning)
+
 	elif self.relay_state == 'confirm':
 		print(self.relay_state)
+		show_hide_items(items_to_hide=self.all_elements, items_to_show=self.confirm_elements)
+		_show_border_img(self.border_ax, self.relay_state, is_warning)
+
 	elif self.relay_state == 'processing':
 		print(self.relay_state)
+		show_hide_items(items_to_hide=self.all_elements, items_to_show=self.processing_elements)
+		_show_border_img(self.border_ax, self.relay_state, is_warning)
+
 	elif self.relay_state == 'off':
 		print(self.relay_state)
+		show_hide_items(items_to_hide=self.all_elements, items_to_show=self.off_elements)
+		_show_border_img(self.border_ax, self.relay_state, is_warning)
+
 	elif self.relay_state == 'disabled':
 		print(self.relay_state)
+		show_hide_items(items_to_hide=self.all_elements, items_to_show=self.disabled_elements)
+		_show_border_img(self.border_ax, self.relay_state, is_warning)
+
 	elif self.relay_state == 'error':
 		print(self.relay_state)
+		show_hide_items(items_to_hide=self.all_elements, items_to_show=self.error_elements)
+		_show_border_img(self.border_ax, self.relay_state, is_warning)
 
 
-def _create_relay_section(fig, is_warning):
 
-	# START - STEP 3
-	step_3_elements, border_ax = create_step_3_elements(fig)
-	show_hide_items(items_to_hide=step_3_elements)
+def _create_relay_section(self, fig, is_warning):
+	border_ax = fig.add_subplot(313)
+	border_ax.set_facecolor(GREY)
+	_clean_up_axis(border_ax)
 
-	# START - STEP 2
-	step_2_elements, step_2_btn_a, step_2_btn_b, border_ax = create_step_2_elements(fig, border_ax=border_ax, is_warning=is_warning)
-	show_hide_items(items_to_hide=step_2_elements)
+	loading_elements = create_loading_elements(fig)
+	on_elements, turn_off_btn = create_on_elements(fig, is_warning)
+	confirm_elements, confirm_off_btn, cancel_btn = create_confirm_elements(fig, is_warning=is_warning)
+	processing_elements = create_processing_elements(fig)
+	off_elements =  create_off_elements(fig)
+	disabled_elements = create_disabled_elements(fig)
+	error_elements = create_error_elements(fig)
 
-	# START - STEP 1
-	step_1_elements, step_1_btn, border_ax = create_step_1_elements(fig, border_ax=border_ax, is_warning=is_warning)
-	# NOTE: instead of hiding, we're showing, unlike in step 3 and 2
-	show_hide_items(items_to_show=step_1_elements)
+	self.turn_off_btn = turn_off_btn
+	self.confirm_off_btn = confirm_off_btn
+	self.cancel_btn = cancel_btn
+	self.border_ax = border_ax
 
-	# START - ACTIONS: Set up lambda functions and pass the required arguments
-	step_1_btn.on_clicked(lambda event: show_hide_items(items_to_hide=step_1_elements, items_to_show=step_2_elements, event=event))
-	step_2_btn_b.on_clicked(lambda event: show_hide_items(items_to_hide=step_2_elements, items_to_show=step_1_elements, event=event))
+	self.loading_elements = loading_elements
+	self.on_elements = on_elements
+	self.confirm_elements = confirm_elements
+	self.processing_elements = processing_elements
+	self.off_elements = off_elements
+	self.disabled_elements = disabled_elements
+	self.error_elements = error_elements
 
-	params = {
-		'items_to_hide': step_2_elements,
-		'items_to_show': step_3_elements,
-		'border_ax': border_ax
-	}
-	step_2_btn_a.on_clicked(lambda event: turn_off_relay(params))
-	return step_1_btn, step_2_btn_a, step_2_btn_b
+	self.all_elements = [
+		loading_elements,
+		on_elements,
+		confirm_elements,
+		processing_elements,
+		off_elements,
+		disabled_elements,
+		error_elements,
+	]
+
+	turn_off_btn.on_clicked(lambda event: change_relay_state(self, 'confirm'))
+	confirm_off_btn.on_clicked(lambda event: confirm_off_relay(self))
+	cancel_btn.on_clicked(lambda event: change_relay_state(self, 'on'))
 
 
 def show_multi_dim_popup(self, event_values):
@@ -671,23 +814,17 @@ def show_multi_dim_popup(self, event_values):
 		fig.canvas.set_window_title(window_title)
 		fig.set_size_inches(6.5, 5.5)
 
-		# # 1 - set up banner
+		# 1 - set up banner
 		_create_banner(fig, is_warning, popup_color)
 
-		# # 2 - set up floor info and intensity
+		# 2 - set up floor info and intensity
 		_create_floor_info(fig, floor_num, intensity)
 
-		# # 3 - set up table
+		# 3 - set up table
 		_create_table(fig, highlight_color=popup_color, event_values=event_values)
 
-		# ? set up border?
 		# 4 - set up relay switch
-		step_1_btn, step_2_btn_a, step_2_btn_b = _create_relay_section(fig, is_warning)
-		# we need to keep a reference to these buttons so they will continue to work
-		# Ref: https://matplotlib.org/stable/api/widgets_api.html
-		self.step_1_btn = step_1_btn
-		self.step_2_btn_a = step_2_btn_a
-		self.step_2_btn_b = step_2_btn_b
+		_create_relay_section(self, fig, is_warning)
 
 		# Also keep a reference to the figure
 		self.alert_window = fig
@@ -722,6 +859,19 @@ def prepare_popup(self, plt, autoclose, is_relay_enabled):
 
 	self.relay_state = 'loading' # initial state
 
+	self.turn_off_btn = None
+	self.confirm_off_btn = None
+	self.cancel_btn = None
+	self.border_ax = None
+	self.loading_elements = None
+	self.on_elements = None
+	self.confirm_elements = None
+	self.processing_elements = None
+	self.off_elements = None
+	self.disabled_elements = None
+	self.error_elements = None
+	self.all_elements = []
+
 class PopUp:
 	def __init__(self):
 		self.sender = 'POP UP'
@@ -733,7 +883,7 @@ class PopUp:
 
 	def show_popup(self):
 		print('SHOW POPUP!')
-		# show_multi_dim_popup(self, TEST_EVENT_VALUES)
+		show_multi_dim_popup(self, TEST_EVENT_VALUES)
 
 		# start_time = time.time()
 		# while time.time() - start_time < 10:
@@ -741,13 +891,16 @@ class PopUp:
 
 
 		# RELAY_STATE_ARR = list(RELAY_STATES.keys())
-		RELAY_STATE_ARR = ['loading', 'on', 'confirm', 'processing', 'off', 'disabled', 'error']
-		print(RELAY_STATE_ARR)
+		# RELAY_STATE_ARR = ['loading', 'on', 'confirm', 'processing', 'off', 'disabled', 'error']
+		RELAY_STATE_ARR = ['on', 'confirm', 'processing', 'off', 'disabled', 'error']
+		# print(RELAY_STATE_ARR)
 		for state in RELAY_STATE_ARR:
+			print(f'STATE: {state}')
 			change_relay_state(self, state)
 			time.sleep(1)
 			state_action(self)
 
+		self.alert_window.canvas.start_event_loop(1)
 		# self.alert_window.canvas.start_event_loop(10)
 
 POPUP = PopUp()
