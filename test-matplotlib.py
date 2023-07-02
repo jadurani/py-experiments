@@ -71,6 +71,7 @@ def init_table_window(floor_num=1, disp_thresh=5, disp=2, intensity=2, drift_thr
 
   # Create a new figure
   fig = plt.figure(facecolor='#EEEEEE')
+  fig.set_size_inches(6, 5.5)
   fig.canvas.set_window_title(banner_text)
 
   ax = fig.add_subplot(211)
@@ -135,7 +136,7 @@ def init_table_window(floor_num=1, disp_thresh=5, disp=2, intensity=2, drift_thr
   table.set_fontsize(12)
   table.scale(1.2, 2.5)
 
-  fig.canvas.start_event_loop(5)
+  fig.canvas.start_event_loop(2)
 
 # # Floor is 1, drift is below drift threshold of 0.5
 # init_alert_window(floor_num=1, disp_thresh=5, disp=2, intensity=2, drift_thresh=0.5, acc=0.5)
